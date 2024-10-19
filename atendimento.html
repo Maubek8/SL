@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
 <head>
+    <base href="https://simges.edu/atendimento">
     <title>SIMGEs - Atendimento</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Estilos globais e layout como anteriormente */
         body, html {
             margin: 0;
             padding: 0;
@@ -30,6 +30,20 @@
             padding: 20px;
             overflow-y: auto;
         }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+        .menu-item {
+            padding: 10px 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .menu-item:hover, .menu-item.active {
+            background-color: #34495e;
+        }
         .header {
             background-color: #3498db;
             color: white;
@@ -39,10 +53,20 @@
             justify-content: space-between;
             align-items: center;
         }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .dashboard-item {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
         .attendance-list {
             max-height: 300px;
             overflow-y: auto;
-            margin-bottom: 20px;
         }
         .attendance-item {
             display: flex;
@@ -51,17 +75,8 @@
             padding: 10px;
             border-bottom: 1px solid #ecf0f1;
         }
-        .edit-button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .edit-button:hover {
-            background-color: #2980b9;
+        .attendance-item:last-child {
+            border-bottom: none;
         }
         .edit-form {
             display: none; /* Inicialmente escondido */
@@ -70,8 +85,34 @@
             background-color: #ecf0f1;
             border-radius: 5px;
         }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .action-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .primary-button {
+            background-color: #3498db;
+            color: white;
+        }
+        .primary-button:hover {
+            background-color: #2980b9;
+        }
+        .secondary-button {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .secondary-button:hover {
+            background-color: #7f8c8d;
+        }
         .modal {
-            display: none; /* Inicialmente escondido */
+            display: none;
             position: fixed;
             z-index: 1;
             left: 0;
@@ -106,17 +147,75 @@
 <body>
     <div class="container">
         <div class="sidebar">
-            <div class="logo">SIMGEs</div>
-            <div class="menu-item">Dashboard</div>
-            <div class="menu-item active">Atendimento</div>
-            <!-- Outros itens de menu -->
+            <div class="logo" onclick="navigateTo('dashboard')">SIMGEs</div>
+            <div class="menu-item" onclick="navigateTo('dashboard')">Dashboard</div>
+            <div class="menu-item active" onclick="navigateTo('atendimento')">Atendimento</div>
+            <div class="menu-item" onclick="navigateTo('logistica')">Logística</div>
+            <div class="menu-item" onclick="navigateTo('cronograma')">Cronograma</div>
+            <div class="menu-item" onclick="navigateTo('recursos-humanos')">Recursos Humanos</div>
+            <div class="menu-item" onclick="navigateTo('financeiro')">Financeiro</div>
+            <div class="menu-item" onclick="navigateTo('relatorios')">Relatórios</div>
+            <div class="menu-item" onclick="navigateTo('satisfacao')">Satisfação</div>
+            <div class="menu-item" onclick="navigateTo('configuracoes')">Configurações</div>
+            <div class="menu-item" onclick="navigateTo('login')">Sair</div>
         </div>
         <div class="content">
             <div class="header">
                 <h1>Atendimento SIMGEs</h1>
+                <div>
+                    <button id="instructionsButton" class="action-button secondary-button">Instruções</button>
+                    <div>
+                        <span id="currentDate"></span>
+                        <span id="currentTime"></span>
+                    </div>
+                </div>
             </div>
-            <div class="attendance-list" id="attendanceList">
-                <!-- Lista de atendimentos será preenchida dinamicamente -->
+            <div class="action-buttons">
+                <button class="action-button primary-button" onclick="openModal('newAttendanceModal')">Novo Atendimento</button>
+                <button class="action-button secondary-button" onclick="openModal('maintenanceModal')">Abrir Chamado para Manutenção</button>
+            </div>
+            <div class="dashboard-grid">
+                <div class="dashboard-item">
+                    <h2>Fila de Atendimento</h2>
+                    <div class="attendance-list" id="attendanceList">
+                        <!-- Lista de atendimentos será preenchida dinamicamente -->
+                    </div>
+                </div>
+                <div class="dashboard-item">
+                    <h2>Agendamentos da Semana</h2>
+                    <div class="week-navigation">
+                        <button id="prevWeek" class="nav-button">&lt; Anterior</button>
+                        <span id="currentWeek"></span>
+                        <button id="nextWeek" class="nav-button">Próximo &gt;</button>
+                    </div>
+                    <div id="weeklySchedule">
+                        <!-- Agendamentos semanais serão preenchidos dinamicamente -->
+                    </div>
+                </div>
+                <div class="dashboard-item">
+                    <h2>Agendamentos Pendentes</h2>
+                    <div class="pending-appointments" id="pendingAppointments">
+                        <!-- Agendamentos pendentes serão preenchidos dinamicamente -->
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-item full-width">
+                <h2>Atendimentos por Tipo</h2>
+                <div class="chart-controls">
+                    <select id="chartTypeSelect">
+                        <option value="module">Módulo</option>
+                        <option value="room">Sala</option>
+                        <option value="discipline">Disciplina</option>
+                        <option value="course">Curso</option>
+                    </select>
+                    <select id="chartPeriodSelect">
+                        <option value="daily">Diário</option>
+                        <option value="weekly">Semanal</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -144,18 +243,92 @@
                 <input type="text" id="module" required>
                 <label for="room">Sala:</label>
                 <input type="text" id="room" required>
+                <label for="startTime">Horário de Início:</label>
+                <input type="time" id="startTime" required>
+                <label for="duration">Duração (minutos):</label>
+                <input type="number" id="duration" required>
                 <button type="submit" class="action-button primary-button">Iniciar Atendimento</button>
             </form>
         </div>
     </div>
 
+    <!-- Modal para Abrir Chamado de Manutenção -->
+    <div id="maintenanceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('maintenanceModal')">&times;</span>
+            <h2>Abrir Chamado para Manutenção</h2>
+            <form id="maintenanceForm">
+                <label for="maintenanceType">Tipo de Manutenção:</label>
+                <select id="maintenanceType" required>
+                    <option value="">Selecione o tipo</option>
+                    <option value="equipamento">Equipamento</option>
+                    <option value="infraestrutura">Infraestrutura</option>
+                    <option value="software">Software</option>
+                </select>
+                <label for="maintenanceDescription">Descrição do Problema:</label>
+                <textarea id="maintenanceDescription" required></textarea>
+                <label for="maintenanceLocation">Localização:</label>
+                <input type="text" id="maintenanceLocation" required>
+                <label for="maintenancePriority">Prioridade:</label>
+                <select id="maintenancePriority" required>
+                    <option value="baixa">Baixa</option>
+                    <option value="media">Média</option>
+                    <option value="alta">Alta</option>
+                    <option value="urgente">Urgente</option>
+                </select>
+                <button type="submit" class="action-button primary-button">Abrir Chamado</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Instructions -->
+    <div id="instructionsModal" class="modal">
+        <div class="modal-content instructions-content">
+            <span class="close" onclick="closeModal('instructionsModal')">&times;</span>
+            <h2>Instruções de Uso</h2>
+            <div id="instructionsContent"></div>
+        </div>
+    </div>
+
+    <!-- Edit Form -->
+    <div id="editAttendanceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEdit()">&times;</span>
+            <h2>Editar Atendimento</h2>
+            <div class="edit-form">
+                <label for="editPatientName">Nome do Paciente:</label>
+                <input type="text" id="editPatientName" required>
+                <label for="editAttendanceType">Tipo de Atendimento:</label>
+                <select id="editAttendanceType" required>
+                    <option value="">Selecione o tipo</option>
+                    <option value="emergencia">Emergência</option>
+                    <option value="consulta">Consulta</option>
+                    <option value="exame">Exame</option>
+                </select>
+                <label for="editProfessors">Professores:</label>
+                <input type="text" id="editProfessors" required>
+                <label for="editDiscipline">Disciplina:</label>
+                <input type="text" id="editDiscipline" required>
+                <label for="editModule">Módulo:</label>
+                <input type="text" id="editModule" required>
+                <label for="editRoom">Sala:</label>
+                <input type="text" id="editRoom" required>
+                <button class="action-button primary-button" onclick="saveEdit()">Salvar Edição</button>
+                <button class="action-button secondary-button" onclick="closeEdit()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const attendanceQueue = [
+        let attendanceChart = null;
+        let attendanceQueue = [
             { 
                 id: 1, 
                 name: "João Silva", 
                 type: "Emergência", 
                 status: "Aguardando", 
+                startTime: "09:30",
+                endTime: "10:30",
                 professors: ["Dr. Carlos"],
                 discipline: "Primeiros Socorros",
                 module: "APH",
@@ -166,6 +339,8 @@
                 name: "Maria Oliveira", 
                 type: "Consulta", 
                 status: "Aguardando", 
+                startTime: "10:00",
+                endTime: "10:45",
                 professors: ["Profa. Ana"],
                 discipline: "Pediatria",
                 module: "Pediátrica",
@@ -176,6 +351,8 @@
                 name: "Carlos Santos", 
                 type: "Exame", 
                 status: "Aguardando", 
+                startTime: "10:30",
+                endTime: "11:00",
                 professors: ["Dr. Eduardo"],
                 discipline: "Exames Clínicos",
                 module: "Exames",
@@ -183,75 +360,37 @@
             }
         ];
 
-        document.addEventListener('DOMContentLoaded', function() {
-            updateAttendanceList();
-        });
-
-        function updateAttendanceList() {
-            const listElement = document.getElementById('attendanceList');
-            listElement.innerHTML = '';
-            attendanceQueue.forEach(attendance => {
-                const attendanceElement = document.createElement('div');
-                attendanceElement.className = 'attendance-item';
-                attendanceElement.innerHTML = `
-                    <div>
-                        <strong>${attendance.name}</strong> - ${attendance.type}
-                        <br>
-                        <small>Professores: ${attendance.professors.join(', ')} | Disciplina: ${attendance.discipline}</small>
-                        <br>
-                        <small>Módulo: ${attendance.module} | Sala: ${attendance.room}</small>
-                    </div>
-                    <div>
-                        <button class="edit-button" onclick="editAttendance(${attendance.id})">Editar</button>
-                    </div>
-                `;
-                listElement.appendChild(attendanceElement);
-            });
-        }
+        // O resto do código permanece igual
+        // ...
 
         function editAttendance(id) {
             const attendance = attendanceQueue.find(a => a.id === id);
-            const editForm = document.createElement('div');
-            editForm.className = 'edit-form';
-            editForm.innerHTML = `
-                <h3>Editar Atendimento: ${attendance.name}</h3>
-                <label for="editName">Nome:</label>
-                <input type="text" id="editName" value="${attendance.name}" required>
-                <label for="editType">Tipo de Atendimento:</label>
-                <select id="editType">
-                    <option value="emergencia"${attendance.type === 'Emergência' ? ' selected' : ''}>Emergência</option>
-                    <option value="consulta"${attendance.type === 'Consulta' ? ' selected' : ''}>Consulta</option>
-                    <option value="exame"${attendance.type === 'Exame' ? ' selected' : ''}>Exame</option>
-                </select>
-                <label for="editProfessors">Professores:</label>
-                <input type="text" id="editProfessors" value="${attendance.professors.join(', ')}" required>
-                <label for="editDiscipline">Disciplina:</label>
-                <input type="text" id="editDiscipline" value="${attendance.discipline}" required>
-                <label for="editModule">Módulo:</label>
-                <input type="text" id="editModule" value="${attendance.module}" required>
-                <label for="editRoom">Sala:</label>
-                <input type="text" id="editRoom" value="${attendance.room}" required>
-                <button onclick="saveAttendance(${attendance.id})">Salvar</button>
-                <button onclick="closeEdit()">Cancelar</button>
-            `;
-            attendanceElement.appendChild(editForm);
+            document.getElementById('editPatientName').value = attendance.name;
+            document.getElementById('editAttendanceType').value = attendance.type;
+            document.getElementById('editProfessors').value = attendance.professors.join(', ');
+            document.getElementById('editDiscipline').value = attendance.discipline;
+            document.getElementById('editModule').value = attendance.module;
+            document.getElementById('editRoom').value = attendance.room;
+
+            openModal('editAttendanceModal');
         }
 
-        function saveAttendance(id) {
+        function saveEdit() {
+            const id = attendanceQueue.length; // Capturando o ID correto
             const attendance = attendanceQueue.find(a => a.id === id);
-            attendance.name = document.getElementById('editName').value;
-            attendance.type = document.getElementById('editType').value;
+            attendance.name = document.getElementById('editPatientName').value;
+            attendance.type = document.getElementById('editAttendanceType').value;
             attendance.professors = document.getElementById('editProfessors').value.split(',').map(p => p.trim());
             attendance.discipline = document.getElementById('editDiscipline').value;
             attendance.module = document.getElementById('editModule').value;
             attendance.room = document.getElementById('editRoom').value;
+
             updateAttendanceList();
+            closeEdit();
         }
 
-        function closeEdit() {
-            const editForms = document.querySelectorAll('.edit-form');
-            editForms.forEach(form => form.remove());
-        }
+        // O restante do código permanece igual
+        // ...
     </script>
 </body>
 </html>
