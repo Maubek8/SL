@@ -49,10 +49,7 @@
             background-color: #3498db;
             color: white;
             padding: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
         }
         .dashboard-grid {
             display: grid;
@@ -88,13 +85,6 @@
         <div class="content">
             <div class="header">
                 <h1>Atendimento SIMGEs</h1>
-                <div>
-                    <span id="currentDate"></span>
-                    <span id="currentTime"></span>
-                </div>
-            </div>
-            <div class="action-buttons">
-                <button class="action-button primary-button" onclick="openModal('newAttendanceModal')">Novo Atendimento</button>
             </div>
             <div class="dashboard-grid">
                 <div class="dashboard-item">
@@ -110,64 +100,53 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+            <div class="action-buttons">
+                <button class="action-button primary-button" onclick="openModal('newAttendanceModal')">Novo Atendimento</button>
+            </div>
 
-    <!-- Modal para Novo Atendimento -->
-    <div id="newAttendanceModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('newAttendanceModal')">&times;</span>
-            <h2>Novo Atendimento</h2>
-            <form id="newAttendanceForm">
-                <label for="patientName">Nome do Paciente:</label>
-                <input type="text" id="patientName" required>
-                <label for="attendanceType">Tipo de Atendimento:</label>
-                <select id="attendanceType" required>
-                    <option value="">Selecione o tipo</option>
-                    <option value="emergencia">Emergência</option>
-                    <option value="consulta">Consulta</option>
-                    <option value="exame">Exame</option>
-                </select>
-                <label for="professors">Professores:</label>
-                <input type="text" id="professors" required>
-                <label for="discipline">Disciplina:</label>
-                <input type="text" id="discipline" required>
-                <label for="module">Módulo:</label>
-                <input type="text" id="module" required>
-                <label for="room">Sala:</label>
-                <input type="text" id="room" required>
-                <label for="startTime">Horário de Início:</label>
-                <input type="time" id="startTime" required>
-                <label for="duration">Duração (minutos):</label>
-                <input type="number" id="duration" required>
-                <button type="submit" class="action-button primary-button">Iniciar Atendimento</button>
-            </form>
+            <!-- Modal para Novo Atendimento -->
+            <div id="newAttendanceModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('newAttendanceModal')">&times;</span>
+                    <h2>Novo Atendimento</h2>
+                    <form id="newAttendanceForm">
+                        <label for="patientName">Nome do Paciente:</label>
+                        <input type="text" id="patientName" required>
+                        <label for="attendanceType">Tipo de Atendimento:</label>
+                        <select id="attendanceType" required>
+                            <option value="">Selecione o tipo</option>
+                            <option value="emergencia">Emergência</option>
+                            <option value="consulta">Consulta</option>
+                            <option value="exame">Exame</option>
+                        </select>
+                        <label for="professors">Professores:</label>
+                        <input type="text" id="professors" required>
+                        <label for="discipline">Disciplina:</label>
+                        <input type="text" id="discipline" required>
+                        <label for="module">Módulo:</label>
+                        <input type="text" id="module" required>
+                        <label for="room">Sala:</label>
+                        <input type="text" id="room" required>
+                        <label for="startTime">Horário de Início:</label>
+                        <input type="time" id="startTime" required>
+                        <label for="duration">Duração (minutos):</label>
+                        <input type="number" id="duration" required>
+                        <button type="submit" class="action-button primary-button">Iniciar Atendimento</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         const attendanceQueue = [];
-        
+
         document.addEventListener('DOMContentLoaded', function() {
-            updateCurrentDate();
-            createAttendanceChart();
-            setInterval(updateClock, 1000);
+            updateAttendanceChart();
         });
 
         function navigateTo(page) {
-            window.location.href = `${page}`;
-        }
-
-        function updateCurrentDate() {
-            const currentDate = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('currentDate').textContent = currentDate.toLocaleDateString('pt-BR', options);
-        }
-
-        function updateClock() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            document.getElementById('currentTime').textContent = timeString;
+            window.location.href = page;
         }
 
         function openModal(modalId) {
@@ -229,17 +208,17 @@
             });
         }
 
-        function createAttendanceChart() {
+        function updateAttendanceChart() {
             const ctx = document.getElementById('attendanceChart').getContext('2d');
-            const labels = attendanceQueue.map(a => a.name);
             const data = attendanceQueue.map(a => (a.status === "Concluído" ? 1 : 0));
-            
+            const labels = attendanceQueue.map(a => a.name);
+
             new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Atendimentos Concluídos',
+                        label: 'Atendimentos',
                         data: data,
                         backgroundColor: '#3498db'
                     }]
