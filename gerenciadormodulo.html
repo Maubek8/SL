@@ -4,55 +4,191 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIMGEs - Gerenciador de Módulos</title>
-    <link rel="icon" href="assets/images/m.ico" type="image/x-icon">
+    <link rel="icon" href="m.ico" type="image/x-icon">
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+        }
+
+        .container {
+            display: flex;
+            height: 100%;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+
+        .menu-item {
+            padding: 10px 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .menu-item:hover {
+            background-color: #34495e;
+        }
+
+        .header {
+            background-color: #3498db;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .submit-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="sidebar">
             <div class="logo" onclick="navigateTo('dashboard.html')">SIMGEs</div>
             <div class="menu-item" onclick="navigateTo('dashboard.html')">Dashboard</div>
-            <div class="menu-item" onclick="navigateTo('atendimento.html')">Atendimento</div>
-            <div class="menu-item" onclick="navigateTo('recursos-humanos.html')">Recursos Humanos</div>
             <div class="menu-item" onclick="navigateTo('financeiro.html')">Financeiro</div>
+            <div class="menu-item" onclick="navigateTo('recursos-humanos.html')">Recursos Humanos</div>
             <div class="menu-item" onclick="navigateTo('logistica.html')">Logística</div>
+            <div class="menu-item" onclick="navigateTo('atendimento.html')">Atendimento</div>
             <div class="menu-item" onclick="navigateTo('relatorios.html')">Relatórios</div>
             <div class="menu-item" onclick="navigateTo('satisfacao.html')">Satisfação</div>
+            <div class="menu-item" onclick="navigateTo('cronograma.html')">Cronograma</div>
             <div class="menu-item" onclick="navigateTo('configuracoes.html')">Configurações</div>
-            <div class="menu-item active" onclick="navigateTo('gerenciadormodulo.html')">Gerenciador de Módulos</div>
-            <div class="menu-item" onclick="logout()">Sair</div>
+            <div class="menu-item" onclick="navigateTo('gerenciadormodulo.html')">Gerenciador de Módulos</div>
         </div>
+        
         <div class="content">
             <div class="header">
-                <h1>Gerenciador de Módulos SIMGEs</h1>
+                <h1 id="moduleTitle">Gerenciador de Módulo</h1>
             </div>
-            <div>
-                <p>Selecione um módulo abaixo para gerenciar:</p>
-                <ul>
-                    <li><button onclick="navigateTo('emergencia.html')">Emergência</button></li>
-                    <li><button onclick="navigateTo('aph.html')">APH</button></li>
-                    <li><button onclick="navigateTo('enfermaria.html')">Enfermaria</button></li>
-                    <li><button onclick="navigateTo('posto_enfermagem.html')">Posto de Enfermagem</button></li>
-                    <li><button onclick="navigateTo('farmacia.html')">Farmácia</button></li>
-                    <li><button onclick="navigateTo('uti.html')">UTI</button></li>
-                    <li><button onclick="navigateTo('centro_cirurgico.html')">Centro Cirúrgico</button></li>
-                    <li><button onclick="navigateTo('esterilizacao.html')">Esterilização</button></li>
-                    <li><button onclick="navigateTo('sala_recuperacao.html')">Sala de Recuperação</button></li>
-                    <li><button onclick="navigateTo('ginecologia.html')">Ginecologia</button></li>
-                    <li><button onclick="navigateTo('obstetricia.html')">Obstetrícia</button></li>
-                    <li><button onclick="navigateTo('ubs_simulada.html')">UBS Simulada</button></li>
-                </ul>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="moduleSelect">Selecione o Módulo:</label>
+                    <select id="moduleSelect" onchange="updateModuleTitle()">
+                        <option value="uti">UTI</option>
+                        <option value="emergencia">Emergência</option>
+                        <option value="aph">APH</option>
+                        <option value="enfermaria">Enfermaria</option>
+                        <option value="posto-enfermagem">Posto de Enfermagem</option>
+                        <option value="farmacia">Farmácia</option>
+                        <option value="centro-cirurgico">Centro Cirúrgico</option>
+                        <option value="esterilizacao">Esterilização</option>
+                        <option value="sala-recuperacao">Sala de Recuperação</option>
+                        <option value="ginecologia">Ginecologia</option>
+                        <option value="obstetricia">Obstetrícia</option>
+                        <option value="ubs-simulada">UBS Simulada</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="professor">Professor Responsável:</label>
+                    <input type="text" id="professor" placeholder="Nome do Professor">
+                </div>
+                <div class="form-group">
+                    <label for="atividade">Criar Atividade:</label>
+                    <input type="text" id="atividade" placeholder="Nome da Atividade">
+                </div>
+                <div class="form-group">
+                    <label for="data">Data da Atividade:</label>
+                    <input type="date" id="data">
+                </div>
+                <div class="form-group">
+                    <label for="disciplinas">Disciplinas:</label>
+                    <input type="text" id="disciplinas" placeholder="Disciplinas (separadas por vírgula)">
+                </div>
+                <div class="form-group">
+                    <label for="funcionarios">Funcionários Agregados:</label>
+                    <input type="text" id="funcionarios" placeholder="Funcionários (separados por vírgula)">
+                </div>
+                <button class="submit-btn" onclick="submitData()">Salvar</button>
             </div>
         </div>
     </div>
 
     <script>
-        function navigateTo(page) {
-            window.location.href = page;
+        // Atualiza o título do módulo com base na seleção
+        function updateModuleTitle() {
+            const moduleSelect = document.getElementById('moduleSelect');
+            const moduleTitle = document.getElementById('moduleTitle');
+            const selectedModule = moduleSelect.options[moduleSelect.selectedIndex].text;
+            moduleTitle.innerText = `Gerenciador de Módulo - ${selectedModule}`;
         }
 
-        function logout() {
-            alert("Você saiu.");
+        // Função para salvar os dados (simulação)
+        function submitData() {
+            const professor = document.getElementById('professor').value;
+            const atividade = document.getElementById('atividade').value;
+            const data = document.getElementById('data').value;
+            const disciplinas = document.getElementById('disciplinas').value;
+            const funcionarios = document.getElementById('funcionarios').value;
+
+            // Aqui você pode integrar a lógica para salvar os dados
+            alert(`Dados Salvos:
+            Professor: ${professor}
+            Atividade: ${atividade}
+            Data: ${data}
+            Disciplinas: ${disciplinas}
+            Funcionários: ${funcionarios}`);
+        }
+
+        // Navegar para outras páginas
+        function navigateTo(page) {
+            window.location.href = page;
         }
     </script>
 </body>
