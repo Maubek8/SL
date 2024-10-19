@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMGEs - Satisfação</title>
+    <link rel="icon" href="assets/images/m.ico" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo" onclick="navigateTo('dashboard.html')">SIMGEs</div>
+            <div class="menu-item" onclick="navigateTo('dashboard.html')">Dashboard</div>
+            <div class="menu-item" onclick="navigateTo('atendimento.html')">Atendimento</div>
+            <div class="menu-item" onclick="navigateTo('recursos-humanos.html')">Recursos Humanos</div>
+            <div class="menu-item" onclick="navigateTo('financeiro.html')">Financeiro</div>
+            <div class="menu-item" onclick="navigateTo('logistica.html')">Logística</div>
+            <div class="menu-item" onclick="navigateTo('relatorios.html')">Relatórios</div>
+            <div class="menu-item active" onclick="navigateTo('satisfacao.html')">Satisfação</div>
+            <div class="menu-item" onclick="navigateTo('configuracoes.html')">Configurações</div>
+            <div class="menu-item" onclick="logout()">Sair</div>
+        </div>
+        <div class="content">
+            <div class="header">
+                <h1>Pesquisa de Satisfação SIMGEs</h1>
+            </div>
+            <div>
+                <p>Envie este link para alunos e professores para que respondam a pesquisa:</p>
+                <button onclick="generateLink()">Gerar Link para a Pesquisa</button>
+                <p id="linkOutput" style="display:none;"></p>
+                
+                <h2>Formulário de Satisfação</h2>
+                <form id="feedbackForm" onsubmit="submitFeedback(event)">
+                    <label for="name">Nome:</label>
+                    <input type="text" id="name" required>
+
+                    <label for="satisfaction">Satisfação geral:</label>
+                    <select id="satisfaction" required>
+                        <option value="Muito Satisfeito">Muito Satisfeito</option>
+                        <option value="Satisfeito">Satisfeito</option>
+                        <option value="Neutro">Neutro</option>
+                        <option value="Insatisfeito">Insatisfeito</option>
+                        <option value="Muito Insatisfeito">Muito Insatisfeito</option>
+                    </select>
+
+                    <label for="comments">Comentários:</label>
+                    <textarea id="comments" rows="4"></textarea>
+
+                    <button type="submit">Enviar Feedback</button>
+                </form>
+
+                <div id="resultMessage" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function logout() {
+            alert("Você saiu.");
+        }
+
+        function generateLink() {
+            const link = window.location.href; // Link da página atual
+            const linkOutput = document.getElementById('linkOutput');
+            linkOutput.innerHTML = `<a href="${link}" target="_blank">${link}</a>`;
+            linkOutput.style.display = 'block';
+        }
+
+        function submitFeedback(event) {
+            event.preventDefault(); // Evita o envio padrão do formulário
+            const name = document.getElementById('name').value;
+            const satisfaction = document.getElementById('satisfaction').value;
+            const comments = document.getElementById('comments').value;
+
+            // Simula a atualização de resultados
+            console.log("Feedback recebido:", { name, satisfaction, comments });
+
+            // Exibe uma mensagem de sucesso
+            const resultMessage = document.getElementById('resultMessage');
+            resultMessage.innerHTML = "Obrigado pelo seu feedback!";
+            resultMessage.style.display = 'block';
+
+            // Limpa o formulário
+            document.getElementById('feedbackForm').reset();
+        }
+    </script>
+</body>
+</html>
