@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <base href="https://github.com/Maubek8/SL.git">
+    <title>SIMGEs - Atendimento</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMGEs - Atendimento</title>
-    <link rel="icon" href="m.ico" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body, html {
@@ -155,6 +155,133 @@
             text-decoration: none;
             cursor: pointer;
         }
+        .pending-appointments {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .pending-appointment {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .pending-appointment:last-child {
+            border-bottom: none;
+        }
+        .confirm-button {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+        }
+        #calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 20px;
+        }
+        .calendar-day {
+            background-color: #ecf0f1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .calendar-day:hover {
+            background-color: #bdc3c7;
+        }
+        .calendar-day.selected {
+            background-color: #3498db;
+            color: white;
+        }
+        .status-button {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+        }
+        .aguardando {
+            background-color: #f1c40f;
+            color: #34495e;
+        }
+        .em-atendimento {
+            background-color: #3498db;
+            color: white;
+        }
+        .concluido {
+            background-color: #8e44ad;
+            color: white;
+        }
+        .edit-button {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            margin-left: 5px;
+        }
+        #weeklySchedule {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .instructions-content {
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .instructions-content ul {
+            padding-left: 20px;
+        }
+        .instructions-content li {
+            margin-bottom: 10px;
+        }
+        #instructionsButton {
+            margin-bottom: 5px;
+        }
+        .week-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .nav-button {
+            padding: 5px 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .nav-button:hover {
+            background-color: #2980b9;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        .chart-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .chart-controls select {
+            padding: 5px;
+        }
+        #currentTime {
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        .header > div {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
     </style>
 </head>
 <body>
@@ -176,8 +303,11 @@
             <div class="header">
                 <h1>Atendimento SIMGEs</h1>
                 <div>
-                    <span id="currentDate"></span>
-                    <span id="currentTime"></span>
+                    <button id="instructionsButton" class="action-button secondary-button">Instruções</button>
+                    <div>
+                        <span id="currentDate"></span>
+                        <span id="currentTime"></span>
+                    </div>
                 </div>
             </div>
             <div class="action-buttons">
@@ -192,10 +322,39 @@
                     </div>
                 </div>
                 <div class="dashboard-item">
-                    <h2>Atendimentos por Tipo</h2>
-                    <div class="chart-container">
-                        <canvas id="attendanceChart"></canvas>
+                    <h2>Agendamentos da Semana</h2>
+                    <div class="week-navigation">
+                        <button id="prevWeek" class="nav-button">&lt; Anterior</button>
+                        <span id="currentWeek"></span>
+                        <button id="nextWeek" class="nav-button">Próximo &gt;</button>
                     </div>
+                    <div id="weeklySchedule">
+                        <!-- Agendamentos semanais serão preenchidos dinamicamente -->
+                    </div>
+                </div>
+                <div class="dashboard-item">
+                    <h2>Agendamentos Pendentes</h2>
+                    <div class="pending-appointments" id="pendingAppointments">
+                        <!-- Agendamentos pendentes serão preenchidos dinamicamente -->
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-item full-width">
+                <h2>Atendimentos por Tipo</h2>
+                <div class="chart-controls">
+                    <select id="chartTypeSelect">
+                        <option value="module">Módulo</option>
+                        <option value="room">Sala</option>
+                        <option value="discipline">Disciplina</option>
+                        <option value="course">Curso</option>
+                    </select>
+                    <select id="chartPeriodSelect">
+                        <option value="daily">Diário</option>
+                        <option value="weekly">Semanal</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <canvas id="attendanceChart"></canvas>
                 </div>
             </div>
         </div>
@@ -262,13 +421,136 @@
         </div>
     </div>
 
+    <!-- Modal for Instructions -->
+    <div id="instructionsModal" class="modal">
+        <div class="modal-content instructions-content">
+            <span class="close" onclick="closeModal('instructionsModal')">&times;</span>
+            <h2>Instruções de Uso</h2>
+            <div id="instructionsContent"></div>
+        </div>
+    </div>
+
     <script>
-        let attendanceQueue = [];
-        
+        let attendanceChart = null;
+        let attendanceQueue = [
+            { 
+                id: 1, 
+                name: "João Silva", 
+                type: "Emergência", 
+                status: "Aguardando", 
+                startTime: "09:30",
+                endTime: "10:30",
+                professors: ["Dr. Carlos"],
+                discipline: "Primeiros Socorros",
+                module: "APH",
+                room: "Sala 1"
+            },
+            { 
+                id: 2, 
+                name: "Maria Oliveira", 
+                type: "Consulta", 
+                status: "Aguardando", 
+                startTime: "10:00",
+                endTime: "10:45",
+                professors: ["Profa. Ana"],
+                discipline: "Pediatria",
+                module: "Pediátrica",
+                room: "Sala 2"
+            },
+            { 
+                id: 3, 
+                name: "Carlos Santos", 
+                type: "Exame", 
+                status: "Aguardando", 
+                startTime: "10:30",
+                endTime: "11:00",
+                professors: ["Dr. Eduardo"],
+                discipline: "Exames Clínicos",
+                module: "Exames",
+                room: "Sala 3"
+            }
+        ];
+
+        const modules = [
+            'Emergência', 'APH', 'Enfermaria', 'Posto de Enfermagem', 'Farmácia', 'UTI',
+            'Centro Cirúrgico', 'Esterilização', 'Sala de Recuperação', 'Ginecologia',
+            'Obstetrícia', 'UBS Simulada'
+        ];
+
+        const rooms = ['Sala 1', 'Sala 2', 'Sala 3', 'Sala 4', 'Sala 5', 'Sala 6', 'Sala 7', 'Sala 8', 'Sala 9', 'Sala 10'];
+
+        const disciplines = ['Clínica Médica', 'Cirurgia', 'Pediatria', 'Ginecologia e Obstetrícia', 'Saúde Coletiva'];
+
+        const courses = ['Medicina', 'Enfermagem', 'Fisioterapia', 'Farmácia'];
+
+        let weeklySchedules = [
+            { day: "Segunda", appointments: [
+                { time: "09:00", patient: "Ana Silva", type: "Consulta" },
+                { time: "14:30", patient: "Pedro Santos", type: "Exame" }
+            ]},
+            { day: "Terça", appointments: [
+                { time: "10:00", patient: "Mariana Oliveira", type: "Emergência" },
+                { time: "15:00", patient: "João Pereira", type: "Consulta" }
+            ]},
+            { day: "Quarta", appointments: [
+                { time: "11:00", patient: "Carla Rodrigues", type: "Exame" },
+                { time: "16:30", patient: "Fernando Costa", type: "Consulta" }
+            ]},
+            { day: "Quinta", appointments: [
+                { time: "09:30", patient: "Lúcia Ferreira", type: "Consulta" },
+                { time: "14:00", patient: "Ricardo Alves", type: "Emergência" }
+            ]},
+            { day: "Sexta", appointments: [
+                { time: "10:30", patient: "Sofia Martins", type: "Exame" },
+                { time: "15:30", patient: "André Sousa", type: "Consulta" }
+            ]}
+        ];
+
+        let pendingAppointments = [
+            { id: 1, name: "Lucas Mendes", type: "Consulta", date: "2023-06-15", time: "14:00", discipline: "Clínica Médica", module: "UBS Simulada", room: "Sala 4" },
+            { id: 2, name: "Fernanda Costa", type: "Exame", date: "2023-06-16", time: "10:30", discipline: "Diagnóstico por Imagem", module: "Radiologia", room: "Sala 5" },
+            { id: 3, name: "Ricardo Oliveira", type: "Emergência", date: "2023-06-17", time: "09:00", discipline: "Emergências Médicas", module: "Emergência", room: "Sala 1" },
+            { id: 4, name: "Camila Santos", type: "Consulta", date: "2023-06-18", time: "15:30", discipline: "Pediatria", module: "UBS Simulada", room: "Sala 3" },
+            { id: 5, name: "André Ferreira", type: "Exame", date: "2023-06-19", time: "11:00", discipline: "Cardiologia", module: "UTI", room: "Sala 6" },
+            { id: 6, name: "Mariana Lima", type: "Consulta", date: "2023-06-20", time: "16:00", discipline: "Ginecologia", module: "Ginecologia", room: "Sala 2" },
+            { id: 7, name: "Paulo Rodrigues", type: "Emergência", date: "2023-06-21", time: "08:30", discipline: "Cirurgia", module: "Centro Cirúrgico", room: "Sala 7" }
+        ];
+
+        let currentWeekStart = new Date();
+        currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay() + 1);
+
+        function navigateTo(page) {
+            const pages = ['dashboard', 'atendimento', 'logistica', 'cronograma', 'recursos-humanos', 'financeiro', 'relatorios', 'satisfacao', 'configuracoes', 'login'];
+            if (pages.includes(page)) {
+                window.location.href = `https://simges.edu/${page}`;
+            } else {
+                console.error(`Invalid page: ${page}`);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            updateCurrentDate();
             updateAttendanceList();
+            updateWeeklySchedule();
+            updatePendingAppointments();
             createAttendanceChart();
+            
+            // Start the clock
+            updateClock();
+            setInterval(updateClock, 1000);
         });
+
+        function updateCurrentDate() {
+            const currentDate = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = currentDate.toLocaleDateString('pt-BR', options);
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('currentTime').textContent = timeString;
+        }
 
         function updateAttendanceList() {
             const listElement = document.getElementById('attendanceList');
@@ -286,36 +568,152 @@
                         <br>
                         <small>Módulo: ${attendance.module} | Sala: ${attendance.room}</small>
                     </div>
+                    <div>
+                        <button class="status-button ${attendance.status.toLowerCase()}" onclick="changeStatus(${attendance.id})">${attendance.status}</button>
+                        <button class="edit-button" onclick="editAttendance(${attendance.id})">Editar</button>
+                    </div>
                 `;
                 listElement.appendChild(attendanceElement);
             });
             createAttendanceChart();
         }
 
-        function createAttendanceChart() {
-            const ctx = document.getElementById('attendanceChart').getContext('2d');
-            const labels = ['Emergência', 'APH', 'Enfermaria', 'Posto de Enfermagem', 'Farmácia', 'UTI', 'Centro Cirúrgico', 'Esterilização', 'Sala de Recuperação', 'Ginecologia', 'Obstetrícia', 'UBS Simulada'];
-            const data = labels.map(() => Math.floor(Math.random() * 20)); // Simulação de dados
+        function updateWeeklySchedule() {
+            const scheduleElement = document.getElementById('weeklySchedule');
+            scheduleElement.innerHTML = '';
+            
+            for (let i = 0; i < 7; i++) {
+                const currentDate = new Date(currentWeekStart);
+                currentDate.setDate(currentDate.getDate() + i);
+                
+                const dayElement = document.createElement('div');
+                dayElement.innerHTML = `<h3>${getDayOfWeek(currentDate)} - ${currentDate.toLocaleDateString()}</h3>`;
+                
+                const dayAppointments = weeklySchedules.find(day => day.day === getDayOfWeek(currentDate))?.appointments || [];
+                
+                dayAppointments.forEach(appointment => {
+                    const appointmentElement = document.createElement('div');
+                    appointmentElement.className = 'attendance-item';
+                    appointmentElement.innerHTML = `
+                        <div>
+                            <strong>${appointment.time}</strong> - ${appointment.patient}
+                            <br>
+                            <small>${appointment.type}</small>
+                        </div>
+                    `;
+                    dayElement.appendChild(appointmentElement);
+                });
+                
+                scheduleElement.appendChild(dayElement);
+            }
+            
+            document.getElementById('currentWeek').textContent = `${currentWeekStart.toLocaleDateString()} - ${new Date(currentWeekStart.getTime() + 6 * 24 * 60 * 60 * 1000).toLocaleDateString()}`;
+        }
 
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Atendimentos Diários',
-                        data: data,
-                        backgroundColor: '#3498db',
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                        }
-                    }
-                }
+        document.getElementById('prevWeek').addEventListener('click', () => {
+            currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+            updateWeeklySchedule();
+        });
+
+        document.getElementById('nextWeek').addEventListener('click', () => {
+            currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+            updateWeeklySchedule();
+        });
+
+        function updatePendingAppointments() {
+            const pendingList = document.getElementById('pendingAppointments');
+            pendingList.innerHTML = '';
+            pendingAppointments.forEach(appointment => {
+                const appointmentElement = document.createElement('div');
+                appointmentElement.className = 'pending-appointment';
+                appointmentElement.innerHTML = `
+                    <div>
+                        <strong>${appointment.name}</strong> - ${appointment.type}
+                        <br>
+                        <small>Data: ${appointment.date} | Hora: ${appointment.time}</small>
+                        <br>
+                        <small>Disciplina: ${appointment.discipline} | Módulo: ${appointment.module} | Sala: ${appointment.room}</small>
+                    </div>
+                    <button class="confirm-button" onclick="analyzeAppointment(${appointment.id})">Analisar</button>
+                `;
+                pendingList.appendChild(appointmentElement);
             });
+        }
+
+        function analyzeAppointment(id) {
+            console.log(`Enviando agendamento ${id} para análise na logística`);
+            alert(`Agendamento ${id} enviado para análise na logística`);
+            
+            setTimeout(() => {
+                confirmAppointment(id);
+            }, 2000);
+        }
+
+        function confirmAppointment(id) {
+            const appointmentIndex = pendingAppointments.findIndex(a => a.id === id);
+            if (appointmentIndex !== -1) {
+                const confirmedAppointment = pendingAppointments.splice(appointmentIndex, 1)[0];
+                
+                const appointmentDate = new Date(confirmedAppointment.date);
+                const dayOfWeek = getDayOfWeek(appointmentDate);
+                const daySchedule = weeklySchedules.find(day => day.day === dayOfWeek);
+                if (daySchedule) {
+                    daySchedule.appointments.push({
+                        time: confirmedAppointment.time,
+                        patient: confirmedAppointment.name,
+                        type: confirmedAppointment.type
+                    });
+                }
+                
+                attendanceQueue.push({
+                    id: attendanceQueue.length + 1,
+                    name: confirmedAppointment.name,
+                    type: confirmedAppointment.type,
+                    status: "Aguardando",
+                    startTime: confirmedAppointment.time,
+                    endTime: "N/A",
+                    professors: ["To be assigned"],
+                    discipline: confirmedAppointment.discipline,
+                    module: confirmedAppointment.module,
+                    room: confirmedAppointment.room
+                });
+                
+                updatePendingAppointments();
+                updateWeeklySchedule();
+                updateAttendanceList();
+                
+                console.log(`Agendamento ${id} confirmado e adicionado ao cronograma e fila de atendimentos`);
+                alert(`Agendamento ${id} confirmado e adicionado ao cronograma e fila de atendimentos`);
+            }
+        }
+
+        function getDayOfWeek(date) {
+            const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            return days[date.getDay()];
+        }
+
+        function changeStatus(id) {
+            const attendance = attendanceQueue.find(a => a.id === id);
+            if (attendance.status === "Aguardando") {
+                attendance.status = "Em atendimento";
+            } else if (attendance.status === "Em atendimento") {
+                attendance.status = "Concluído";
+            }
+            updateAttendanceList();
+        }
+
+        function editAttendance(id) {
+            const attendance = attendanceQueue.find(a => a.id === id);
+            document.getElementById('editPatientName').value = attendance.name;
+            document.getElementById('editAttendanceType').value = attendance.type;
+            document.getElementById('editProfessors').value = attendance.professors.join(', ');
+            document.getElementById('editDiscipline').value = attendance.discipline;
+            document.getElementById('editModule').value = attendance.module;
+            document.getElementById('editRoom').value = attendance.room;
+            document.getElementById('editStartTime').value = attendance.startTime;
+            document.getElementById('editEndTime').value = attendance.endTime;
+            
+            openModal('editAttendanceModal');
         }
 
         document.getElementById('newAttendanceForm').addEventListener('submit', function(e) {
@@ -328,7 +726,8 @@
             const room = document.getElementById('room').value;
             const startTime = document.getElementById('startTime').value;
             const duration = parseInt(document.getElementById('duration').value);
-            const endTime = new Date('1970-01-01T' + startTime + 'Z').getTime() + duration * 60000;
+            const endTime = new Date('1970-01-01T' + startTime + 'Z')
+                .getTime() + duration * 60000;
             const endTimeString = new Date(endTime).toTimeString().slice(0, 5);
 
             const newAttendance = {
@@ -363,6 +762,86 @@
             this.reset();
         });
 
+        function createAttendanceChart() {
+            const chartElement = document.getElementById('attendanceChart');
+            const chartTypeSelect = document.getElementById('chartTypeSelect');
+            const chartPeriodSelect = document.getElementById('chartPeriodSelect');
+            
+            if (chartElement) {
+                const ctx = chartElement.getContext('2d');
+
+                function updateChart() {
+                    const selectedType = chartTypeSelect.value;
+                    const selectedPeriod = chartPeriodSelect.value;
+                    let labels, data;
+
+                    switch (selectedType) {
+                        case 'module':
+                            labels = modules;
+                            data = modules.map(() => Math.floor(Math.random() * 20));
+                            break;
+                        case 'room':
+                            labels = rooms;
+                            data = rooms.map(() => Math.floor(Math.random() * 15));
+                            break;
+                        case 'discipline':
+                            labels = disciplines;
+                            data = disciplines.map(() => Math.floor(Math.random() * 25));
+                            break;
+                        case 'course':
+                            labels = courses;
+                            data = courses.map(() => Math.floor(Math.random() * 30));
+                            break;
+                    }
+
+                    let backgroundColor;
+                    if (selectedType === 'room') {
+                        backgroundColor = '#3498db';
+                    } else {
+                        backgroundColor = [
+                            '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c',
+                            '#34495e', '#16a085', '#27ae60', '#2980b9', '#8e44ad',
+                            '#f1c40f', '#e67e22', '#95a5a6', '#d35400', '#c0392b'
+                        ];
+                    }
+
+                    if (selectedPeriod === 'weekly') {
+                        data = data.map(value => value * 5);
+                    }
+
+                    if (attendanceChart) {
+                        attendanceChart.destroy();
+                    }
+
+                    attendanceChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: `Atendimentos ${selectedPeriod === 'daily' ? 'Diários' : 'Semanais'}`,
+                                data: data,
+                                backgroundColor: backgroundColor
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    });
+                }
+
+                chartTypeSelect.addEventListener('change', updateChart);
+                chartPeriodSelect.addEventListener('change', updateChart);
+                updateChart();
+            }
+        }
+
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'block';
         }
@@ -371,14 +850,27 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
-        function navigateTo(page) {
-            const pages = ['dashboard', 'atendimento', 'logistica', 'cronograma', 'recursos-humanos', 'financeiro', 'relatorios', 'satisfacao', 'configuracoes', 'login'];
-            if (pages.includes(page)) {
-                window.location.href = `https://github.com/Maubek8/SL.git/${page}`;
-            } else {
-                console.error(`Invalid page: ${page}`);
+        function openInstructions() {
+            const instructionsContent = {
+                'Novo Atendimento': 'Use este botão para adicionar um novo atendimento à fila. Preencha todos os campos necessários.',
+                'Abrir Chamado para Manutenção': 'Utilize esta opção para reportar problemas ou solicitar manutenção em equipamentos ou infraestrutura.',
+                'Fila de Atendimento': 'Visualize e gerencie os atendimentos do dia. Clique nos botões de status para atualizar o progresso.',
+                'Agendamentos da Semana': 'Veja os agendamentos programados para a semana atual.',
+                'Atendimentos por Tipo': 'Gráfico que mostra a distribuição dos tipos de atendimento.',
+                'Agendamentos Pendentes': 'Confirme ou gerencie os agendamentos que ainda não foram aprovados.'
+            };
+
+            let content = '<ul>';
+            for (const [key, value] of Object.entries(instructionsContent)) {
+                content += `<li><strong>${key}:</strong> ${value}</li>`;
             }
+            content += '</ul>';
+
+            document.getElementById('instructionsContent').innerHTML = content;
+            openModal('instructionsModal');
         }
+
+        document.getElementById('instructionsButton').addEventListener('click', openInstructions);
     </script>
 </body>
 </html>
