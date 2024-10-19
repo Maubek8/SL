@@ -63,7 +63,7 @@
             padding: 20px;
         }
         .chart-container {
-            height: 400px;
+            height: 300px;
         }
     </style>
 </head>
@@ -90,7 +90,9 @@
                 <div class="dashboard-item">
                     <h2>Fila de Atendimento</h2>
                     <div class="attendance-list" id="attendanceList">
-                        <!-- Lista de atendimentos será preenchida dinamicamente -->
+                        <div><strong>João Silva</strong> - Emergência <br> Início: 09:30 | Fim: 10:30 <br> Professores: Dr. Carlos | Disciplina: Primeiros Socorros | Módulo: APH | Sala: Sala 1 <button onclick="editAttendance(1)">Editar</button></div>
+                        <div><strong>Maria Oliveira</strong> - Consulta <br> Início: 10:00 | Fim: 10:45 <br> Professores: Profa. Ana | Disciplina: Pediatria | Módulo: Pediátrica | Sala: Sala 2 <button onclick="editAttendance(2)">Editar</button></div>
+                        <div><strong>Carlos Santos</strong> - Exame <br> Início: 10:30 | Fim: 11:00 <br> Professores: Dr. Eduardo | Disciplina: Exames Clínicos | Módulo: Exames | Sala: Sala 3 <button onclick="editAttendance(3)">Editar</button></div>
                     </div>
                 </div>
                 <div class="dashboard-item">
@@ -100,9 +102,7 @@
                     </div>
                 </div>
             </div>
-            <div class="action-buttons">
-                <button class="action-button primary-button" onclick="openModal('newAttendanceModal')">Novo Atendimento</button>
-            </div>
+            <button class="action-button primary-button" onclick="openModal('newAttendanceModal')">Novo Atendimento</button>
 
             <!-- Modal para Novo Atendimento -->
             <div id="newAttendanceModal" class="modal">
@@ -142,7 +142,7 @@
         const attendanceQueue = [];
 
         document.addEventListener('DOMContentLoaded', function() {
-            updateAttendanceChart();
+            createAttendanceChart();
         });
 
         function navigateTo(page) {
@@ -208,19 +208,19 @@
             });
         }
 
-        function updateAttendanceChart() {
+        function createAttendanceChart() {
             const ctx = document.getElementById('attendanceChart').getContext('2d');
-            const data = attendanceQueue.map(a => (a.status === "Concluído" ? 1 : 0));
-            const labels = attendanceQueue.map(a => a.name);
+            const data = [3, 5, 2]; // Exemplo de dados
+            const labels = ['Emergência', 'Consulta', 'Exame'];
 
             new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Atendimentos',
+                        label: 'Atendimentos por Tipo',
                         data: data,
-                        backgroundColor: '#3498db'
+                        backgroundColor: ['#e74c3c', '#3498db', '#2ecc71']
                     }]
                 },
                 options: {
