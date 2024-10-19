@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMGEs - Relatórios</title>
+    <link rel="icon" href="assets/images/m.ico" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo" onclick="navigateTo('dashboard.html')">SIMGEs</div>
+            <div class="menu-item" onclick="navigateTo('dashboard.html')">Dashboard</div>
+            <div class="menu-item" onclick="navigateTo('atendimento.html')">Atendimento</div>
+            <div class="menu-item" onclick="navigateTo('recursos-humanos.html')">Recursos Humanos</div>
+            <div class="menu-item" onclick="navigateTo('financeiro.html')">Financeiro</div>
+            <div class="menu-item" onclick="navigateTo('logistica.html')">Logística</div>
+            <div class="menu-item active" onclick="navigateTo('relatorios.html')">Relatórios</div>
+            <div class="menu-item" onclick="navigateTo('satisfacao.html')">Satisfação</div>
+            <div class="menu-item" onclick="navigateTo('configuracoes.html')">Configurações</div>
+            <div class="menu-item" onclick="logout()">Sair</div>
+        </div>
+        <div class="content">
+            <div class="header">
+                <h1>Relatórios SIMGEs</h1>
+            </div>
+            <div>
+                <p>Visualize e gere relatórios relacionados às operações do sistema.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Tipo de Relatório</th>
+                            <th>Responsável</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>01/03/2024</td>
+                            <td>Relatório de Vendas</td>
+                            <td>Equipe de Vendas</td>
+                        </tr>
+                        <tr>
+                            <td>05/03/2024</td>
+                            <td>Relatório Financeiro</td>
+                            <td>Gerente Financeiro</td>
+                        </tr>
+                        <tr>
+                            <td>10/03/2024</td>
+                            <td>Relatório de Recursos Humanos</td>
+                            <td>RH</td>
+                        </tr>
+                        <!-- Adicione mais linhas conforme necessário -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="footer">
+                <button onclick="navigateTo('atendimento.html')">Voltar ao Atendimento</button>
+                <button onclick="navigateTo('recursos-humanos.html')">Recursos Humanos</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function logout() {
+            alert("Você saiu.");
+            // Adicione lógica de logout se necessário
+        }
+    </script>
+</body>
+</html>
