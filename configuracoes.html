@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMGEs - Configurações</title>
+    <link rel="icon" href="assets/images/m.ico" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo" onclick="navigateTo('dashboard.html')">SIMGEs</div>
+            <div class="menu-item" onclick="navigateTo('dashboard.html')">Dashboard</div>
+            <div class="menu-item" onclick="navigateTo('atendimento.html')">Atendimento</div>
+            <div class="menu-item" onclick="navigateTo('recursos-humanos.html')">Recursos Humanos</div>
+            <div class="menu-item" onclick="navigateTo('financeiro.html')">Financeiro</div>
+            <div class="menu-item" onclick="navigateTo('logistica.html')">Logística</div>
+            <div class="menu-item" onclick="navigateTo('relatorios.html')">Relatórios</div>
+            <div class="menu-item" onclick="navigateTo('satisfacao.html')">Satisfação</div>
+            <div class="menu-item active" onclick="navigateTo('configuracoes.html')">Configurações</div>
+            <div class="menu-item" onclick="logout()">Sair</div>
+        </div>
+        <div class="content">
+            <div class="header">
+                <h1>Configurações SIMGEs</h1>
+            </div>
+            <div>
+                <p>Ajuste as configurações do sistema abaixo:</p>
+                <form id="settingsForm">
+                    <label for="themeColor">Cor do Tema:</label>
+                    <input type="color" id="themeColor" name="themeColor" value="#3498db">
+                    <br><br>
+                    
+                    <label for="fontSize">Tamanho da Fonte:</label>
+                    <select id="fontSize" name="fontSize">
+                        <option value="16px">16px</option>
+                        <option value="18px">18px</option>
+                        <option value="20px">20px</option>
+                        <option value="22px">22px</option>
+                    </select>
+                    <br><br>
+                    
+                    <button type="button" onclick="saveSettings()">Salvar Configurações</button>
+                </form>
+                <div id="resultMessage" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function logout() {
+            alert("Você saiu.");
+        }
+
+        function saveSettings() {
+            const themeColor = document.getElementById('themeColor').value;
+            const fontSize = document.getElementById('fontSize').value;
+
+            // Salvar configurações (pode ser localStorage ou outro método)
+            localStorage.setItem('themeColor', themeColor);
+            localStorage.setItem('fontSize', fontSize);
+
+            // Exibir mensagem de sucesso
+            const resultMessage = document.getElementById('resultMessage');
+            resultMessage.innerHTML = "Configurações salvas com sucesso!";
+            resultMessage.style.display = 'block';
+
+            // Aplicar as configurações na página atual
+            applySettings();
+        }
+
+        function applySettings() {
+            const themeColor = localStorage.getItem('themeColor') || '#3498db';
+            const fontSize = localStorage.getItem('fontSize') || '16px';
+
+            document.body.style.backgroundColor = themeColor;
+            document.body.style.fontSize = fontSize;
+        }
+
+        // Aplicar configurações ao carregar a página
+        window.onload = applySettings;
+    </script>
+</body>
+</html>
