@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMGEs - Financeiro</title>
+    <link rel="icon" href="assets/images/m.ico" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo" onclick="navigateTo('dashboard.html')">SIMGEs</div>
+            <div class="menu-item" onclick="navigateTo('dashboard.html')">Dashboard</div>
+            <div class="menu-item" onclick="navigateTo('atendimento.html')">Atendimento</div>
+            <div class="menu-item" onclick="navigateTo('recursos-humanos.html')">Recursos Humanos</div>
+            <div class="menu-item active" onclick="navigateTo('financeiro.html')">Financeiro</div>
+            <div class="menu-item" onclick="navigateTo('logistica.html')">Logística</div>
+            <div class="menu-item" onclick="navigateTo('relatorios.html')">Relatórios</div>
+            <div class="menu-item" onclick="navigateTo('satisfacao.html')">Satisfação</div>
+            <div class="menu-item" onclick="navigateTo('configuracoes.html')">Configurações</div>
+            <div class="menu-item" onclick="logout()">Sair</div>
+        </div>
+        <div class="content">
+            <div class="header">
+                <h1>Financeiro SIMGEs</h1>
+            </div>
+            <div>
+                <p>Gerencie as informações financeiras da organização aqui.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mês</th>
+                            <th>Receita</th>
+                            <th>Despesa</th>
+                            <th>Saldo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Janeiro</td>
+                            <td>R$ 10,000</td>
+                            <td>R$ 7,000</td>
+                            <td>R$ 3,000</td>
+                        </tr>
+                        <tr>
+                            <td>Fevereiro</td>
+                            <td>R$ 12,000</td>
+                            <td>R$ 8,500</td>
+                            <td>R$ 3,500</td>
+                        </tr>
+                        <tr>
+                            <td>Março</td>
+                            <td>R$ 15,000</td>
+                            <td>R$ 9,000</td>
+                            <td>R$ 6,000</td>
+                        </tr>
+                        <!-- Adicione mais linhas conforme necessário -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="footer">
+                <button onclick="navigateTo('atendimento.html')">Voltar ao Atendimento</button>
+                <button onclick="navigateTo('recursos-humanos.html')">Recursos Humanos</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function logout() {
+            alert("Você saiu.");
+            // Adicione lógica de logout se necessário
+        }
+    </script>
+</body>
+</html>
