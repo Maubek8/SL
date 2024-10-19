@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMGEs - Cronograma</title>
+    <link rel="icon" href="assets/images/m.ico" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo" onclick="navigateTo('dashboard.html')">SIMGEs</div>
+            <div class="menu-item" onclick="navigateTo('dashboard.html')">Dashboard</div>
+            <div class="menu-item" onclick="navigateTo('atendimento.html')">Atendimento</div>
+            <div class="menu-item" onclick="navigateTo('recursos-humanos.html')">Recursos Humanos</div>
+            <div class="menu-item" onclick="navigateTo('financeiro.html')">Financeiro</div>
+            <div class="menu-item" onclick="navigateTo('logistica.html')">Logística</div>
+            <div class="menu-item" onclick="navigateTo('relatorios.html')">Relatórios</div>
+            <div class="menu-item" onclick="navigateTo('satisfacao.html')">Satisfação</div>
+            <div class="menu-item" onclick="navigateTo('configuracoes.html')">Configurações</div>
+            <div class="menu-item" onclick="logout()">Sair</div>
+        </div>
+        <div class="content">
+            <div class="header">
+                <h1>Cronograma SIMGEs</h1>
+            </div>
+            <div>
+                <p>Aqui você pode visualizar e gerenciar o cronograma de atividades.</p>
+                <!-- Adicione conteúdo adicional relacionado ao cronograma aqui -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Atividade</th>
+                            <th>Responsável</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>01/01/2024</td>
+                            <td>Início das aulas</td>
+                            <td>Prof. João</td>
+                        </tr>
+                        <tr>
+                            <td>15/01/2024</td>
+                            <td>Reunião de pais</td>
+                            <td>Coordenação</td>
+                        </tr>
+                        <tr>
+                            <td>30/01/2024</td>
+                            <td>Prova 1</td>
+                            <td>Prof. Maria</td>
+                        </tr>
+                        <!-- Adicione mais linhas conforme necessário -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function logout() {
+            alert("Você saiu.");
+            // Adicione lógica de logout se necessário
+        }
+    </script>
+</body>
+</html>
