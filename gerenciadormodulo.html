@@ -6,6 +6,7 @@
     <title>SIMGEs - Gerenciador de Módulos</title>
     <link rel="icon" href="m.ico" type="image/x-icon">
     <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body, html {
             margin: 0;
@@ -75,7 +76,7 @@
             margin-bottom: 5px;
         }
 
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -94,6 +95,15 @@
 
         .submit-btn:hover {
             background-color: #2980b9;
+        }
+
+        .chart-container {
+            margin-top: 20px;
+            height: 300px;
+        }
+
+        .maintenance-container {
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -155,7 +165,25 @@
                     <label for="funcionarios">Funcionários Agregados:</label>
                     <input type="text" id="funcionarios" placeholder="Funcionários (separados por vírgula)">
                 </div>
+                <div class="form-group">
+                    <label for="alunos">Alunos:</label>
+                    <input type="file" id="alunos" accept=".csv, .txt" placeholder="Upload de lista de alunos">
+                </div>
                 <button class="submit-btn" onclick="submitData()">Salvar</button>
+            </div>
+
+            <div class="chart-container">
+                <h3>Produtividade x Ociosidade</h3>
+                <canvas id="productivityChart"></canvas>
+            </div>
+
+            <div class="maintenance-container">
+                <h3>Solicitar Manutenção</h3>
+                <div class="form-group">
+                    <label for="manutencao">Descrição da Manutenção:</label>
+                    <textarea id="manutencao" placeholder="Descrição detalhada da manutenção"></textarea>
+                </div>
+                <button class="submit-btn" onclick="submitMaintenance()">Solicitar Manutenção</button>
             </div>
         </div>
     </div>
@@ -176,6 +204,7 @@
             const data = document.getElementById('data').value;
             const disciplinas = document.getElementById('disciplinas').value;
             const funcionarios = document.getElementById('funcionarios').value;
+            const alunos = document.getElementById('alunos').value;
 
             // Aqui você pode integrar a lógica para salvar os dados
             alert(`Dados Salvos:
@@ -183,8 +212,53 @@
             Atividade: ${atividade}
             Data: ${data}
             Disciplinas: ${disciplinas}
-            Funcionários: ${funcionarios}`);
+            Funcionários: ${funcionarios}
+            Alunos: ${alunos}`);
         }
+
+        // Função para solicitar manutenção
+        function submitMaintenance() {
+            const manutencao = document.getElementById('manutencao').value;
+
+            // Aqui você pode integrar a lógica para solicitar a manutenção
+            alert(`Solicitação de Manutenção Enviada:
+            Descrição: ${manutencao}`);
+        }
+
+        // Função para gerar gráfico de produtividade x ociosidade
+        const productivityData = {
+            labels: ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'],
+            productivity: [75, 80, 85, 78, 82],
+            idleness: [25, 20, 15, 22, 18]
+        };
+
+        new Chart(document.getElementById('productivityChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: productivityData.labels,
+                datasets: [{
+                    label: 'Produtividade',
+                    data: productivityData.productivity,
+                    borderColor: '#2ecc71',
+                    fill: false
+                }, {
+                    label: 'Ociosidade',
+                    data: productivityData.idleness,
+                    borderColor: '#e74c3c',
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
 
         // Navegar para outras páginas
         function navigateTo(page) {
