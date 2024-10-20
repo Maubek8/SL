@@ -302,20 +302,27 @@
 </style>
 </head>
 <body>
-    <div class="container">
-        <div class="sidebar">
-            <div class="logo" onclick="navigateTo('dashboard')">SIMGEs</div>
-            <div class="menu-item" onclick="navigateTo('dashboard')">Dashboard</div>
-            <div class="menu-item" onclick="navigateTo('financeiro')">Financeiro</div>
-            <div class="menu-item" onclick="navigateTo('recursos-humanos')">Recursos Humanos</div>
-            <div class="menu-item" onclick="navigateTo('logistica')">Logística</div>
-            <div class="menu-item active" onclick="navigateTo('atendimento')">Atendimento</div>
-            <div class="menu-item" onclick="navigateTo('relatorios')">Relatórios</div>
-            <div class="menu-item" onclick="navigateTo('acessos')">Acessos</div>
-            <div class="menu-item" onclick="navigateTo('cronograma')">Cronograma</div>
-            <div class="menu-item" onclick="navigateTo('satisfacao')">Satisfação</div>
-            <div class="menu-item" onclick="navigateTo('login')">Sair</div>
-        </div>
+  <script>
+    function navigateTo(page) {
+        // Redireciona para a página local
+        window.location.href = `${page}.html`; // Adiciona .html ao nome da página
+    }
+</script>
+
+<div class="sidebar">
+    <div class="logo" onclick="navigateTo('index')">SIMGEs</div>
+    <div class="menu-item" onclick="navigateTo('dashboard')">Dashboard</div>
+    <div class="menu-item" onclick="navigateTo('financeiro')">Financeiro</div>
+    <div class="menu-item" onclick="navigateTo('recursos-humanos')">Recursos Humanos</div>
+    <div class="menu-item" onclick="navigateTo('logistica')">Logística</div>
+    <div class="menu-item active" onclick="navigateTo('atendimento')">Atendimento</div>
+    <div class="menu-item" onclick="navigateTo('relatorios')">Relatórios</div>
+    <div class="menu-item" onclick="navigateTo('acessos')">Acessos</div>
+    <div class="menu-item" onclick="navigateTo('cronograma')">Cronograma</div>
+    <div class="menu-item" onclick="navigateTo('satisfacao')">Satisfação</div>
+    <div class="menu-item" onclick="navigateTo('login')">Sair</div>
+</div>
+
         <div class="content">
             <div class="header">
                 <h1>Atendimento SIMGEs</h1>
