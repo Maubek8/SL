@@ -1,0 +1,216 @@
+html><head><base href="https://github.com/Maubek8/SL">
+<title>SIMGEs - Documentação Técnica</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f4f4f4;
+    }
+    h1, h2, h3 {
+        color: #2c3e50;
+    }
+    h1 {
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+    }
+    h2 {
+        margin-top: 30px;
+    }
+    pre {
+        background-color: #ecf0f1;
+        border: 1px solid #bdc3c7;
+        border-radius: 4px;
+        padding: 15px;
+        overflow-x: auto;
+    }
+    code {
+        font-family: 'Courier New', Courier, monospace;
+        background-color: #ecf0f1;
+        padding: 2px 4px;
+        border-radius: 3px;
+    }
+    .section {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .note {
+        background-color: #e8f4fd;
+        border-left: 4px solid #3498db;
+        padding: 10px;
+        margin: 15px 0;
+    }
+</style>
+</head>
+<body>
+    <h1>Documentação Técnica - SIMGEs (Sistema Integrado de Gestão Hospitalar e Educacional Simulada)</h1>
+    
+    <div class="section">
+        <h2>1. Visão Geral</h2>
+        <p>O SIMGEs é uma plataforma web desenvolvida para gerenciar atendimentos simulados em um ambiente educacional de saúde. Ele integra funcionalidades de agendamento, fila de atendimento, chamados de manutenção e análise de dados em um único sistema.</p>
+    </div>
+
+    <div class="section">
+        <h2>2. Tecnologias Utilizadas</h2>
+        <ul>
+            <li><strong>Frontend:</strong> HTML5, CSS3, JavaScript (ES6+)</li>
+            <li><strong>Bibliotecas:</strong> Chart.js para visualização de dados</li>
+            <li><strong>Estilização:</strong> CSS personalizado com Flexbox e Grid para layout responsivo</li>
+            <li><strong>Controle de Versão:</strong> Git (recomendado)</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>3. Estrutura do Projeto</h2>
+        <pre>
+simges/
+├── index.html
+├── css/
+│   └── styles.css
+├── js/
+│   ├── main.js
+│   ├── attendanceQueue.js
+│   ├── weeklySchedule.js
+│   └── charts.js
+└── assets/
+    └── images/
+        └── logo.png
+        </pre>
+    </div>
+
+    <div class="section">
+        <h2>4. Componentes Principais</h2>
+        
+        <h3>4.1 Fila de Atendimento</h3>
+        <p>Gerenciada pelo módulo <code>attendanceQueue.js</code>, esta funcionalidade permite:</p>
+        <ul>
+            <li>Adicionar novos atendimentos</li>
+            <li>Atualizar o status dos atendimentos</li>
+            <li>Editar detalhes dos atendimentos</li>
+        </ul>
+        <pre>
+// Exemplo de estrutura de dados para um atendimento
+const attendance = {
+    id: 1,
+    name: "João Silva",
+    type: "Emergência",
+    status: "Aguardando",
+    startTime: "09:30",
+    endTime: "10:30",
+    professors: ["Dr. Carlos"],
+    discipline: "Primeiros Socorros",
+    module: "APH",
+    room: "Sala 1"
+};
+        </pre>
+
+        <h3>4.2 Agendamento Semanal</h3>
+        <p>Implementado em <code>weeklySchedule.js</code>, este módulo:</p>
+        <ul>
+            <li>Exibe agendamentos para a semana atual</li>
+            <li>Permite navegação entre semanas</li>
+            <li>Integra-se com o sistema de confirmação de agendamentos pendentes</li>
+        </ul>
+
+        <h3>4.3 Visualização de Dados</h3>
+        <p>Utilizando Chart.js, o módulo <code>charts.js</code> cria gráficos interativos para:</p>
+        <ul>
+            <li>Distribuição de atendimentos por tipo</li>
+            <li>Utilização de salas</li>
+            <li>Estatísticas por disciplina e curso</li>
+        </ul>
+        <pre>
+// Exemplo de criação de gráfico
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Emergência', 'Consulta', 'Exame'],
+        datasets: [{
+            label: 'Atendimentos por Tipo',
+            data: [12, 19, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+        </pre>
+    </div>
+
+    <div class="section">
+        <h2>5. Funcionalidades Principais</h2>
+        
+        <h3>5.1 Novo Atendimento</h3>
+        <p>Permite adicionar um novo atendimento à fila, capturando detalhes como nome do paciente, tipo de atendimento, professores envolvidos, etc.</p>
+
+        <h3>5.2 Chamado de Manutenção</h3>
+        <p>Facilita a abertura de chamados para manutenção de equipamentos ou infraestrutura, com opções para especificar tipo, descrição, localização e prioridade.</p>
+
+        <h3>5.3 Gestão de Agendamentos Pendentes</h3>
+        <p>Interface para confirmar ou gerenciar agendamentos que ainda não foram aprovados, integrando-se ao calendário semanal após confirmação.</p>
+    </div>
+
+    <div class="section">
+        <h2>6. Integração e Fluxo de Dados</h2>
+        <p>O sistema utiliza armazenamento local (localStorage) para persistir dados entre sessões. Em um ambiente de produção, recomenda-se a implementação de um backend robusto com banco de dados.</p>
+        <pre>
+// Exemplo de persistência de dados
+localStorage.setItem('attendanceQueue', JSON.stringify(attendanceQueue));
+
+// Exemplo de recuperação de dados
+const savedQueue = JSON.parse(localStorage.getItem('attendanceQueue')) || [];
+        </pre>
+    </div>
+
+    <div class="section">
+        <h2>7. Considerações de Segurança</h2>
+        <ul>
+            <li>Implementar autenticação e autorização para acesso às funcionalidades</li>
+            <li>Utilizar HTTPS para todas as comunicações</li>
+            <li>Sanitizar inputs do usuário para prevenir XSS e injeção de código</li>
+            <li>Implementar validação de dados tanto no frontend quanto no backend</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>8. Melhorias Futuras</h2>
+        <ul>
+            <li>Implementação de um backend robusto com API RESTful</li>
+            <li>Integração com sistemas de autenticação (OAuth, JWT)</li>
+            <li>Adição de funcionalidades de relatórios avançados</li>
+            <li>Implementação de notificações em tempo real (WebSockets)</li>
+            <li>Desenvolvimento de aplicativos móveis nativos para iOS e Android</li>
+        </ul>
+    </div>
+
+    <div class="note">
+        <p><strong>Nota:</strong> Esta documentação é um ponto de partida e deve ser atualizada conforme o projeto evolui. Mantenha-a sincronizada com as mudanças no código e adicione exemplos de uso e snippets de código relevantes para facilitar a manutenção e expansão do sistema.</p>
+    </div>
+
+    <script>
+        // Código JavaScript pode ser adicionado aqui para funcionalidades interativas na documentação, se necessário
+    </script>
+</body></html>
