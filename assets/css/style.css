@@ -30,9 +30,12 @@ body, html {
     color: white;
     padding: 20px;
     margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    text-align: right; /* Mantém o texto alinhado à direita */
+}
+
+.header h1, .header p {
+    margin: 0;
+    display: block; /* Garante que cada elemento fique em uma linha separada */
 }
 
 /* Estilos de gráfico e tabelas */
