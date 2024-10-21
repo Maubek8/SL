@@ -30,17 +30,19 @@ body, html {
     color: white;
     padding: 20px;
     margin-bottom: 20px;
-    text-align: right; /* Mantém o texto alinhado à direita */
+    text-align: right; /* Mantém o alinhamento à direita */
 }
 
-.header h1, .header p {
+.header h1 {
     margin: 0;
-    display: block; /* Garante que cada elemento fique em uma linha separada */
+    font-size: 24px;
 }
 
-/* Estilos de gráfico e tabelas */
-.chart-container {
-    height: 400px;
+.header p {
+    margin: 0;
+    margin-top: 10px; /* Ajusta o espaço entre o título e o texto */
+    font-size: 12px;
+    display: block; /* Força o texto a ficar abaixo do título */
 }
 
 .dashboard-item {
