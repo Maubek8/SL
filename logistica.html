@@ -1,91 +1,41 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logística - Sistema de Gestão</title>
-    <link rel="stylesheet" href="assets/css/style.css"> <!-- CSS global -->
-    <link rel="stylesheet" href="assets/css/logistica.css"> <!-- CSS exclusivo da página de Logística -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js para gráficos -->
-</head>
-<body>
-    <!-- Estrutura da página com barra lateral e conteúdo -->
-    <div class="container">
-        <!-- Barra lateral -->
-        <div class="sidebar">
-            <div class="logo" onclick="navigateTo('dashboard.html')">SIMGEs</div>
-            <div class="menu-item" onclick="navigateTo('dashboard.html')">Dashboard</div>
-            <div class="menu-item" onclick="navigateTo('financeiro.html')">Financeiro</div>
-            <div class="menu-item" onclick="navigateTo('recursos-humanos.html')">Recursos Humanos</div>
-            <div class="menu-item" onclick="toggleSubMenu('logistica')">Logística</div>
-            <div class="sub-menu" id="logistica-submenu">
-                <div class="sub-menu-item" onclick="showSection('equipment-management')">Gestão de Equipamentos</div>
-                <div class="sub-menu-item" onclick="showSection('calendar')">Calendário e Agendamento</div>
-                <div class="sub-menu-item" onclick="showSection('consumables')">Materiais Consumíveis</div>
-                <div class="sub-menu-item" onclick="showSection('participants')">Gestão de Participantes</div>
-                <div class="sub-menu-item" onclick="showSection('reports')">Relatórios e Análises</div>
-                <div class="sub-menu-item" onclick="showSection('support')">Suporte Operacional</div>
-            </div>
-            <div class="menu-item" onclick="navigateTo('atendimento.html')">Atendimento</div>
-            <div class="menu-item" onclick="navigateTo('relatorios.html')">Relatórios</div>
-            <div class="menu-item" onclick="navigateTo('cronograma.html')">Cronograma</div>
-            <div class="menu-item" onclick="navigateTo('configuracoes.html')">Configurações</div>
-        </div>
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.location.pathname.includes("logistica.html")) {
+        initLogisticaPage();
+    }
+});
 
-        <!-- Conteúdo principal -->
-        <div class="content">
-            <div class="header">
-                <h1>Gestão de Logística</h1>
-            </div>
+function initLogisticaPage() {
+    // Inicializa a página com a seção de equipamentos exibida por padrão
+    showSection('equipment-management');
 
-            <!-- Seção de Gestão de Equipamentos -->
-            <div id="equipment-management" class="section">
-                <h2>Gestão de Equipamentos</h2>
-                <!-- Conteúdo de Gestão de Equipamentos -->
-            </div>
+    // Adiciona eventos aos formulários
+    document.getElementById('equipamento-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        adicionarEquipamento();
+    });
 
-            <!-- Seção de Calendário e Agendamento -->
-            <div id="calendar" class="section">
-                <h2>Calendário e Agendamento</h2>
-                <p>Gerencie a reserva de salas e equipamentos através do calendário.</p>
-                <div id="calendar-content">
-                    <!-- Conteúdo do calendário -->
-                </div>
-            </div>
+    document.getElementById('material-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        adicionarMaterial();
+    });
 
-            <!-- Seção de Materiais Consumíveis -->
-            <div id="consumables" class="section">
-                <h2>Materiais Consumíveis</h2>
-                <!-- Conteúdo de Materiais Consumíveis -->
-            </div>
+    document.getElementById('suporte-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        registrarSuporte();
+    });
+}
 
-            <!-- Seção de Gestão de Participantes -->
-            <div id="participants" class="section">
-                <h2>Gestão de Participantes</h2>
-                <!-- Conteúdo de Gestão de Participantes -->
-            </div>
+// Função para exibir a seção apropriada ao clicar no sub-botão
+function showSection(sectionId) {
+    document.querySelectorAll('.section').forEach(section => {
+        section.style.display = 'none';
+    });
+    document.getElementById(sectionId).style.display = 'block';
+}
 
-            <!-- Seção de Relatórios e Análises -->
-            <div id="reports" class="section">
-                <h2>Relatórios e Análises</h2>
-                <!-- Conteúdo de Relatórios -->
-            </div>
+// Função para adicionar equipamento na seção "Gestão de Equipamentos"
+let equipamentos = [];
 
-            <!-- Seção de Suporte Operacional -->
-            <div id="support" class="section">
-                <h2>Suporte Operacional</h2>
-                <!-- Conteúdo de Suporte -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="assets/js/script.js"></script> <!-- Scripts globais -->
-    <script src="assets/js/logistica.js"></script> <!-- Scripts específicos da Logística -->
-
-    <script>
-        // Inicializa a seção de Equipamentos por padrão
-        showSection('equipment-management');
-    </script>
-</body>
-</html>
+function adicionarEquipamento() {
+    const nomeEquipamento = document.getElementById('nome-equipamento').value;
+    const statusEquipamento = document.getElementById('status
