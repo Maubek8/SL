@@ -1,63 +1,76 @@
-// Array para armazenar os dados dos equipamentos
-let equipamentos = [];
+/* Estilos específicos para a página de Logística */
 
-// Função para adicionar equipamento
-function adicionarEquipamento() {
-    // Capturar os valores do formulário
-    const nomeEquipamento = document.getElementById('nome-equipamento').value;
-    const statusEquipamento = document.getElementById('status-equipamento').value;
-
-    // Criar objeto de equipamento e adicionar ao array
-    const novoEquipamento = { nome: nomeEquipamento, status: statusEquipamento };
-    equipamentos.push(novoEquipamento);
-
-    // Atualizar a tabela e o gráfico
-    atualizarTabelaEquipamentos();
-    atualizarGraficoEquipamentos();
-
-    // Limpar o formulário
-    document.getElementById('equipamento-form').reset();
+/* Tabelas */
+.logistica-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
 }
 
-// Função para atualizar a tabela de equipamentos
-function atualizarTabelaEquipamentos() {
-    const tabela = document.getElementById('equipamentos-lista');
-    tabela.innerHTML = ''; // Limpa a tabela antes de atualizar
-
-    // Iterar sobre os equipamentos e criar linhas para a tabela
-    equipamentos.forEach(equipamento => {
-        const linha = document.createElement('tr');
-        linha.innerHTML = `<td>${equipamento.nome}</td><td>${equipamento.status}</td>`;
-        tabela.appendChild(linha);
-    });
+.logistica-table th, .logistica-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
 }
 
-// Função para atualizar o gráfico de status dos equipamentos
-function atualizarGraficoEquipamentos() {
-    const disponiveis = equipamentos.filter(e => e.status === 'Disponível').length;
-    const manutencao = equipamentos.filter(e => e.status === 'Em Manutenção').length;
-
-    const ctx = document.getElementById('equipamentosGrafico').getContext('2d');
-    new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: ['Disponível', 'Em Manutenção'],
-            datasets: [{
-                data: [disponiveis, manutencao],
-                backgroundColor: ['#2ecc71', '#e74c3c'],
-            }]
-        }
-    });
+.logistica-table th {
+    background-color: #3498db;
+    color: white;
 }
 
-// Inicializar a página de logística
-function initLogisticaPage() {
-    if (window.location.pathname.includes("logistica.html")) {
-        // Executa as funções específicas da página de logística
-        atualizarTabelaEquipamentos();
-        atualizarGraficoEquipamentos();
-    }
+/* Gráfico */
+.logistica-grafico {
+    width: 100%;
+    max-width: 700px;
+    height: auto;
 }
 
-// Chame essa função ao carregar a página
-initLogisticaPage();
+/* Seções específicas da página de logística */
+.section {
+    display: none;
+}
+
+/* Formulário */
+form {
+    margin: 20px 0;
+}
+
+label {
+    margin-right: 10px;
+}
+
+input, select {
+    margin-right: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Sub-menus */
+.sub-menu-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.sub-menu-item:hover {
+    background-color: #2980b9;
+}
