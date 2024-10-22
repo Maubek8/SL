@@ -1,30 +1,37 @@
-// Array para armazenar os dados dos equipamentos
-let equipamentos = [];
+// Inicializar a página de Logística apenas se a URL contiver 'logistica.html'
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.location.pathname.includes("logistica.html")) {
+        initLogisticaPage();
+    }
+});
 
-// Função para adicionar equipamento
-function adicionarEquipamento() {
-    // Capturar os valores do formulário
-    const nomeEquipamento = document.getElementById('nome-equipamento').value;
-    const statusEquipamento = document.getElementById('status-equipamento').value;
-
-    // Criar objeto de equipamento e adicionar ao array
-    const novoEquipamento = { nome: nomeEquipamento, status: statusEquipamento };
-    equipamentos.push(novoEquipamento);
-
-    // Atualizar a tabela e o gráfico
+// Função para inicializar a página de Logística
+function initLogisticaPage() {
     atualizarTabelaEquipamentos();
     atualizarGraficoEquipamentos();
 
-    // Limpar o formulário
+    // Outras funções específicas de logística podem ser chamadas aqui
+}
+
+// Função para adicionar equipamento
+function adicionarEquipamento() {
+    const nomeEquipamento = document.getElementById('nome-equipamento').value;
+    const statusEquipamento = document.getElementById('status-equipamento').value;
+
+    const novoEquipamento = { nome: nomeEquipamento, status: statusEquipamento };
+    equipamentos.push(novoEquipamento);
+
+    atualizarTabelaEquipamentos();
+    atualizarGraficoEquipamentos();
+
     document.getElementById('equipamento-form').reset();
 }
 
 // Função para atualizar a tabela de equipamentos
 function atualizarTabelaEquipamentos() {
     const tabela = document.getElementById('equipamentos-lista');
-    tabela.innerHTML = ''; // Limpa a tabela antes de atualizar
+    tabela.innerHTML = ''; // Limpa a tabela
 
-    // Iterar sobre os equipamentos e criar linhas para a tabela
     equipamentos.forEach(equipamento => {
         const linha = document.createElement('tr');
         linha.innerHTML = `<td>${equipamento.nome}</td><td>${equipamento.status}</td>`;
@@ -50,14 +57,5 @@ function atualizarGraficoEquipamentos() {
     });
 }
 
-// Inicializar a página de logística
-function initLogisticaPage() {
-    if (window.location.pathname.includes("logistica.html")) {
-        // Executa as funções específicas da página de logística
-        atualizarTabelaEquipamentos();
-        atualizarGraficoEquipamentos();
-    }
-}
-
-// Chame essa função ao carregar a página
-initLogisticaPage();
+// Array global para armazenar os equipamentos
+let equipamentos = [];
