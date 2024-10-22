@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logística - Sistema de Gestão</title>
-    <!-- Carregar o CSS global -->
-    <link rel="stylesheet" href="assets/css/style.css">
-    <!-- Carregar o CSS exclusivo da página de Logística -->
-    <link rel="stylesheet" href="assets/css/logistica.css">
-    <!-- Incluindo o Chart.js para os gráficos -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css"> <!-- CSS global -->
+    <link rel="stylesheet" href="assets/css/logistica.css"> <!-- CSS exclusivo da página de Logística -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js para gráficos -->
 </head>
 <body>
-    <!-- Estrutura do layout principal -->
+    <!-- Estrutura da página com barra lateral e conteúdo -->
     <div class="container">
         <!-- Barra lateral -->
         <div class="sidebar">
@@ -41,7 +38,7 @@
                 <h1>Gestão de Logística</h1>
             </div>
 
-            <!-- Subtítulos para a seção de Logística -->
+            <!-- Seção de Gestão de Equipamentos -->
             <div id="equipment-management" class="section">
                 <h2>Gestão de Equipamentos</h2>
                 <form id="equipamento-form">
@@ -64,7 +61,7 @@
                         </tr>
                     </thead>
                     <tbody id="equipamentos-lista">
-                        <!-- Dados de equipamentos serão inseridos aqui dinamicamente -->
+                        <!-- Equipamentos serão exibidos dinamicamente -->
                     </tbody>
                 </table>
 
@@ -73,53 +70,91 @@
                 <canvas class="logistica-grafico" id="equipamentosGrafico" width="400" height="200"></canvas>
             </div>
 
-            <!-- Outras seções de logística -->
+            <!-- Seção de Calendário e Agendamento -->
             <div id="calendar" class="section">
                 <h2>Calendário e Agendamento</h2>
-                <p>Funcionalidade de agendamento de uso dos recursos do laboratório.</p>
+                <p>Gerencie a reserva de salas e equipamentos através do calendário.</p>
+                <div id="calendar-content">
+                    <!-- Aqui estará o conteúdo do calendário interativo -->
+                </div>
             </div>
 
+            <!-- Seção de Materiais Consumíveis -->
             <div id="consumables" class="section">
                 <h2>Materiais Consumíveis</h2>
-                <p>Gerenciamento de materiais consumíveis.</p>
+                <p>Gerenciamento de estoque de materiais consumíveis.</p>
+                <table class="logistica-table">
+                    <thead>
+                        <tr>
+                            <th>Material</th>
+                            <th>Quantidade em Estoque</th>
+                            <th>Repor Estoque</th>
+                        </tr>
+                    </thead>
+                    <tbody id="materiais-lista">
+                        <!-- Materiais serão exibidos dinamicamente -->
+                    </tbody>
+                </table>
             </div>
 
+            <!-- Seção de Gestão de Participantes -->
             <div id="participants" class="section">
                 <h2>Gestão de Participantes</h2>
-                <p>Gerenciamento de participantes e alunos envolvidos no laboratório.</p>
+                <p>Gerencie os funcionários e professores do SimLab.</p>
+                <table class="logistica-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Cargo</th>
+                            <th>Setor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="participantes-lista">
+                        <!-- Participantes serão exibidos dinamicamente -->
+                    </tbody>
+                </table>
             </div>
 
+            <!-- Seção de Relatórios e Análises -->
             <div id="reports" class="section">
                 <h2>Relatórios e Análises</h2>
-                <p>Geração de relatórios e análises dos dados logísticos.</p>
+                <p>Geração de relatórios logísticos e análise dos dados.</p>
+                <button onclick="gerarRelatorio()">Gerar Relatório</button>
+                <canvas class="logistica-grafico" id="relatoriosGrafico" width="400" height="200"></canvas>
             </div>
 
+            <!-- Seção de Suporte Operacional -->
             <div id="support" class="section">
                 <h2>Suporte Operacional</h2>
-                <p>Gestão de suporte e operações do laboratório.</p>
+                <p>Gerencie o suporte técnico e as solicitações operacionais.</p>
+                <form id="suporte-form">
+                    <label for="descricao-suporte">Descrição do Problema:</label>
+                    <input type="text" id="descricao-suporte" name="descricao-suporte" required>
+                    <button type="button" onclick="registrarSuporte()">Registrar Solicitação</button>
+                </form>
+
+                <!-- Tabela de Suporte -->
+                <table class="logistica-table">
+                    <thead>
+                        <tr>
+                            <th>Problema</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="suporte-lista">
+                        <!-- Solicitações de suporte serão exibidas dinamicamente -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
-    <!-- Script da funcionalidade da Logística -->
-    <script src="assets/js/script.js"></script> <!-- Script global -->
-    <script src="assets/js/logistica.js"></script> <!-- Script exclusivo da página de logística -->
+    <!-- Scripts -->
+    <script src="assets/js/script.js"></script> <!-- Scripts globais -->
+    <script src="assets/js/logistica.js"></script> <!-- Scripts específicos da Logística -->
 
-    <!-- Função de navegação -->
     <script>
-        function navigateTo(page) {
-            window.location.href = page;
-        }
-
-        // Função para exibir as seções corretas da logística
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.style.display = 'none';
-            });
-            document.getElementById(sectionId).style.display = 'block';
-        }
-
-        // Inicializa com a seção de gestão de equipamentos visível
+        // Inicializa a seção de Equipamentos por padrão
         showSection('equipment-management');
     </script>
 </body>
