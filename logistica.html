@@ -4,18 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logística - Sistema de Gestão</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/logistica.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
+        <!-- Barra lateral -->
         <div class="sidebar">
             <div class="logo" onclick="navigateTo('dashboard.html')">SIMGEs</div>
             <div class="menu-item" onclick="navigateTo('log/logistica.html')">Logística</div>
             <div class="menu-item" onclick="navigateTo('financeiro.html')">Financeiro</div>
-            <!-- Outros menus -->
+            <div class="menu-item" onclick="navigateTo('recursos-humanos.html')">Recursos Humanos</div>
+            <div class="menu-item" onclick="navigateTo('atendimento.html')">Atendimento</div>
+            <div class="menu-item" onclick="navigateTo('relatorios.html')">Relatórios</div>
+            <div class="menu-item" onclick="navigateTo('cronograma.html')">Cronograma</div>
+            <div class="menu-item" onclick="navigateTo('configuracoes.html')">Configurações</div>
         </div>
 
+        <!-- Conteúdo principal -->
         <div class="content">
             <div class="header">
                 <h1>Gestão de Logística</h1>
@@ -35,7 +41,7 @@
             </form>
 
             <!-- Tabela para listar equipamentos -->
-            <table id="equipamentos-tabela">
+            <table class="logistica-table">
                 <thead>
                     <tr>
                         <th>Nome do Equipamento</th>
@@ -49,10 +55,11 @@
 
             <!-- Gráfico para visualização dos equipamentos -->
             <h3>Status dos Equipamentos</h3>
-            <canvas id="equipamentosGrafico" width="400" height="200"></canvas>
+            <canvas class="logistica-grafico" id="equipamentosGrafico" width="400" height="200"></canvas>
         </div>
     </div>
 
-    <script src="assets/js/script.js"></script>
+    <!-- Scripts -->
+    <script src="assets/js/logistica.js"></script>
 </body>
 </html>
