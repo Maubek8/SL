@@ -1,33 +1,136 @@
-/* Estilos básicos da tabela */
+/* Reseta margens e padding para garantir consistência */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos globais */
+body, html {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    height: 100%;
+}
+
+/* Estrutura da página */
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Barra lateral */
+.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+    top: 0;
+    left: 0;
+}
+
+/* Logo no topo da barra lateral */
+.sidebar .logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    cursor: pointer;
+}
+
+/* Estilos dos itens da barra lateral */
+.sidebar .menu-item {
+    padding: 15px 10px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+}
+
+.sidebar .menu-item:hover {
+    background-color: #34495e;
+}
+
+/* Conteúdo da página principal */
+.content {
+    margin-left: 270px; /* Margem para a barra lateral */
+    padding: 20px;
+    flex-grow: 1; /* Permite que o conteúdo ocupe o restante do espaço */
+    background-color: #f9f9f9;
+    min-height: 100vh;
+}
+
+/* Cabeçalhos das páginas */
+.header {
+    background-color: #3498db;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Tabelas globais */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
+    margin-bottom: 20px;
 }
 
 table th, table td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 12px;
     text-align: left;
 }
 
 table th {
     background-color: #3498db;
     color: white;
+    font-size: 16px;
 }
 
-/* Estilos para o formulário */
-form {
-    margin: 20px 0;
+/* Botões globais */
+button {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-label {
-    margin-right: 10px;
+button:hover {
+    background-color: #2980b9;
 }
 
-input, select {
-    margin-right: 10px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+/* Estilos responsivos */
+@media screen and (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .content {
+        margin-left: 0;
+        padding: 10px;
+    }
+
+    .sidebar .menu-item {
+        text-align: center;
+        padding: 10px;
+    }
+
+    .header {
+        padding: 15px;
+        font-size: 18px;
+    }
+
+    table th, table td {
+        font-size: 14px;
+        padding: 8px;
+    }
 }
