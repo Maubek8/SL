@@ -4,18 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logística - Sistema de Gestão</title>
-    <!-- Caminho atualizado para CSS -->
+    <!-- Carregar o CSS global -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Carregar o CSS exclusivo da página de Logística -->
     <link rel="stylesheet" href="assets/css/logistica.css">
+    <!-- Incluindo o Chart.js para os gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <!-- Estrutura do layout principal -->
     <div class="container">
         <!-- Barra lateral -->
         <div class="sidebar">
             <div class="logo" onclick="navigateTo('dashboard.html')">SIMGEs</div>
-            <div class="menu-item" onclick="navigateTo('log/logistica.html')">Logística</div>
+            <div class="menu-item" onclick="navigateTo('dashboard.html')">Dashboard</div>
             <div class="menu-item" onclick="navigateTo('financeiro.html')">Financeiro</div>
             <div class="menu-item" onclick="navigateTo('recursos-humanos.html')">Recursos Humanos</div>
+            <div class="menu-item" onclick="toggleSubMenu('logistica')">Logística</div>
+            <div class="sub-menu" id="logistica-submenu">
+                <div class="sub-menu-item" onclick="showSection('equipment-management')">Gestão de Equipamentos</div>
+                <div class="sub-menu-item" onclick="showSection('calendar')">Calendário e Agendamento</div>
+                <div class="sub-menu-item" onclick="showSection('consumables')">Materiais Consumíveis</div>
+                <div class="sub-menu-item" onclick="showSection('participants')">Gestão de Participantes</div>
+                <div class="sub-menu-item" onclick="showSection('reports')">Relatórios e Análises</div>
+                <div class="sub-menu-item" onclick="showSection('support')">Suporte Operacional</div>
+            </div>
             <div class="menu-item" onclick="navigateTo('atendimento.html')">Atendimento</div>
             <div class="menu-item" onclick="navigateTo('relatorios.html')">Relatórios</div>
             <div class="menu-item" onclick="navigateTo('cronograma.html')">Cronograma</div>
@@ -28,39 +41,86 @@
                 <h1>Gestão de Logística</h1>
             </div>
 
-            <!-- Formulário para inserir equipamentos -->
-            <h2>Gestão de Equipamentos</h2>
-            <form id="equipamento-form">
-                <label for="nome-equipamento">Nome do Equipamento:</label>
-                <input type="text" id="nome-equipamento" name="nome-equipamento" required>
-                <label for="status-equipamento">Status:</label>
-                <select id="status-equipamento" name="status-equipamento">
-                    <option value="Disponível">Disponível</option>
-                    <option value="Em Manutenção">Em Manutenção</option>
-                </select>
-                <button type="button" onclick="adicionarEquipamento()">Adicionar Equipamento</button>
-            </form>
+            <!-- Subtítulos para a seção de Logística -->
+            <div id="equipment-management" class="section">
+                <h2>Gestão de Equipamentos</h2>
+                <form id="equipamento-form">
+                    <label for="nome-equipamento">Nome do Equipamento:</label>
+                    <input type="text" id="nome-equipamento" name="nome-equipamento" required>
+                    <label for="status-equipamento">Status:</label>
+                    <select id="status-equipamento" name="status-equipamento">
+                        <option value="Disponível">Disponível</option>
+                        <option value="Em Manutenção">Em Manutenção</option>
+                    </select>
+                    <button type="button" onclick="adicionarEquipamento()">Adicionar Equipamento</button>
+                </form>
 
-            <!-- Tabela para listar equipamentos -->
-            <table class="logistica-table">
-                <thead>
-                    <tr>
-                        <th>Nome do Equipamento</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="equipamentos-lista">
-                    <!-- Dados de equipamentos serão inseridos aqui dinamicamente -->
-                </tbody>
-            </table>
+                <!-- Tabela para listar equipamentos -->
+                <table class="logistica-table">
+                    <thead>
+                        <tr>
+                            <th>Nome do Equipamento</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="equipamentos-lista">
+                        <!-- Dados de equipamentos serão inseridos aqui dinamicamente -->
+                    </tbody>
+                </table>
 
-            <!-- Gráfico para visualização dos equipamentos -->
-            <h3>Status dos Equipamentos</h3>
-            <canvas class="logistica-grafico" id="equipamentosGrafico" width="400" height="200"></canvas>
+                <!-- Gráfico de Status dos Equipamentos -->
+                <h3>Status dos Equipamentos</h3>
+                <canvas class="logistica-grafico" id="equipamentosGrafico" width="400" height="200"></canvas>
+            </div>
+
+            <!-- Outras seções de logística -->
+            <div id="calendar" class="section">
+                <h2>Calendário e Agendamento</h2>
+                <p>Funcionalidade de agendamento de uso dos recursos do laboratório.</p>
+            </div>
+
+            <div id="consumables" class="section">
+                <h2>Materiais Consumíveis</h2>
+                <p>Gerenciamento de materiais consumíveis.</p>
+            </div>
+
+            <div id="participants" class="section">
+                <h2>Gestão de Participantes</h2>
+                <p>Gerenciamento de participantes e alunos envolvidos no laboratório.</p>
+            </div>
+
+            <div id="reports" class="section">
+                <h2>Relatórios e Análises</h2>
+                <p>Geração de relatórios e análises dos dados logísticos.</p>
+            </div>
+
+            <div id="support" class="section">
+                <h2>Suporte Operacional</h2>
+                <p>Gestão de suporte e operações do laboratório.</p>
+            </div>
         </div>
     </div>
 
-    <!-- Caminho atualizado para JS -->
-    <script src="assets/js/logistica.js"></script>
+    <!-- Script da funcionalidade da Logística -->
+    <script src="assets/js/script.js"></script> <!-- Script global -->
+    <script src="assets/js/logistica.js"></script> <!-- Script exclusivo da página de logística -->
+
+    <!-- Função de navegação -->
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        // Função para exibir as seções corretas da logística
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        // Inicializa com a seção de gestão de equipamentos visível
+        showSection('equipment-management');
+    </script>
 </body>
 </html>
