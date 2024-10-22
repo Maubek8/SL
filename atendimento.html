@@ -1,1040 +1,354 @@
-<html><head><base href="https://github.com/Maubek8/SL">
-<title>SIMGEs - Atendimento</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        font-family: 'Arial', sans-serif;
-        background-color: #f0f2f5;
-    }
-    .container {
-        display: flex;
-        height: 100%;
-    }
-    .sidebar {
-        width: 250px;
-        background-color: #2c3e50;
-        color: white;
-        padding: 20px;
-        overflow-y: auto;
-    }
-    .content {
-        flex-grow: 1;
-        padding: 20px;
-        overflow-y: auto;
-    }
-    .logo {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 30px;
-        cursor: pointer;
-    }
-    .menu-item {
-        padding: 10px 0;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-    .menu-item:hover, .menu-item.active {
-        background-color: #34495e;
-    }
-    .header {
-        background-color: #3498db;
-        color: white;
-        padding: 20px;
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-    }
-    .header-right {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-    }
-    #instructionsButton {
-        margin-bottom: 10px;
-    }
-    #currentTime {
-        font-weight: bold;
-    }
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
-    }
-    .dashboard-item {
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        padding: 20px;
-    }
-    .chart-container {
-        height: 400px;
-    }
-    .attendance-list {
-        max-height: 300px;
-        overflow-y: auto;
-    }
-    .attendance-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        border-bottom: 1px solid #ecf0f1;
-    }
-    .attendance-item:last-child {
-        border-bottom: none;
-    }
-    .status {
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 12px;
-    }
-    .status-aguardando {
-        background-color: #f1c40f;
-        color: #34495e;
-    }
-    .status-em-atendimento {
-        background-color: #3498db;
-        color: white;
-    }
-    .status-concluido {
-        background-color: #2ecc71;
-        color: white;
-    }
-    .action-buttons {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-    }
-    .action-button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-    .primary-button {
-        background-color: #3498db;
-        color: white;
-    }
-    .primary-button:hover {
-        background-color: #2980b9;
-    }
-    .secondary-button {
-        background-color: #95a5a6;
-        color: white;
-    }
-    .secondary-button:hover {
-        background-color: #7f8c8d;
-    }
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0,0,0,0.4);
-    }
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 500px;
-    }
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    .pending-appointments {
-        max-height: 250px;
-        overflow-y: auto;
-    }
-    .pending-appointment {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        border-bottom: 1px solid #ecf0f1;
-    }
-    .pending-appointment:last-child {
-        border-bottom: none;
-    }
-    .confirm-button {
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 12px;
-        cursor: pointer;
-        background-color: #2ecc71;
-        color: white;
-        border: none;
-    }
-    #calendar {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 5px;
-        margin-top: 20px;
-    }
-    .calendar-day {
-        background-color: #ecf0f1;
-        padding: 10px;
-        text-align: center;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-    .calendar-day:hover {
-        background-color: #bdc3c7;
-    }
-    .calendar-day.selected {
-        background-color: #3498db;
-        color: white;
-    }
-    .status-button {
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 12px;
-        cursor: pointer;
-        border: none;
-    }
-    .aguardando {
-        background-color: #f1c40f;
-        color: #34495e;
-    }
-    .em-atendimento {
-        background-color: #3498db;
-        color: white;
-    }
-    .concluido {
-        background-color: #8e44ad;
-        color: white;
-    }
-    .edit-button {
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 12px;
-        cursor: pointer;
-        background-color: #2ecc71;
-        color: white;
-        border: none;
-        margin-left: 5px;
-    }
-    #weeklySchedule {
-        max-height: 250px;
-        overflow-y: auto;
-    }
-    .instructions-content {
-        max-width: 600px;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-    .instructions-content ul {
-        padding-left: 20px;
-    }
-    .instructions-content li {
-        margin-bottom: 10px;
-    }
-    .week-navigation {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-    .nav-button {
-        padding: 5px 10px;
-        background-color: #3498db;
-        color: white;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
-    }
-    .nav-button:hover {
-        background-color: #2980b9;
-    }
-    .full-width {
-        grid-column: 1 / -1;
-    }
-    .chart-controls {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
-    .chart-controls select {
-        padding: 5px;
-    }
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    .instructions-content {
-        position: absolute;
-        top: 50px;
-        left: 50px;
-        width: 400px;
-        height: 500px;
-        resize: both;
-        overflow: auto;
-        background-color: white;
-        border: 1px solid #ccc;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    #instructionsModalContent {
-        cursor: move;
-    }
-</style>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMGEs - Atendimento</title>
+    <link rel="stylesheet" href="assets/css/atendimento.css"> <!-- Link para o CSS separado -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <script>
-    function navigateTo(page) {
-        // Redireciona para a página local
-        window.location.href = `${page}.html`; // Adiciona .html ao nome da página
-    }
-</script>
+    <div class="sidebar">
+        <div class="logo" onclick="navigateTo('index')">SIMGEs</div>
+        <div class="menu-item" onclick="navigateTo('dashboard')">Dashboard</div>
+        <div class="menu-item" onclick="navigateTo('financeiro')">Financeiro</div>
+        <div class="menu-item" onclick="navigateTo('recursos-humanos')">Recursos Humanos</div>
+        <div class="menu-item" onclick="navigateTo('logistica')">Logística</div>
+        <div class="menu-item active" onclick="navigateTo('atendimento')">Atendimento</div>
+        <div class="menu-item" onclick="navigateTo('relatorios')">Relatórios</div>
+        <div class="menu-item" onclick="navigateTo('acessos')">Acessos</div>
+        <div class="menu-item" onclick="navigateTo('cronograma')">Cronograma</div>
+        <div class="menu-item" onclick="navigateTo('satisfacao')">Satisfação</div>
+        <div class="menu-item" onclick="navigateTo('login')">Sair</div>
+    </div>
 
-<div class="sidebar">
-    <div class="logo" onclick="navigateTo('index')">SIMGEs</div>
-    <div class="menu-item" onclick="navigateTo('dashboard')">Dashboard</div>
-    <div class="menu-item" onclick="navigateTo('financeiro')">Financeiro</div>
-    <div class="menu-item" onclick="navigateTo('recursos-humanos')">Recursos Humanos</div>
-    <div class="menu-item" onclick="navigateTo('logistica')">Logística</div>
-    <div class="menu-item active" onclick="navigateTo('atendimento')">Atendimento</div>
-    <div class="menu-item" onclick="navigateTo('relatorios')">Relatórios</div>
-    <div class="menu-item" onclick="navigateTo('acessos')">Acessos</div>
-    <div class="menu-item" onclick="navigateTo('cronograma')">Cronograma</div>
-    <div class="menu-item" onclick="navigateTo('satisfacao')">Satisfação</div>
-    <div class="menu-item" onclick="navigateTo('login')">Sair</div>
-</div>
+    <div class="content">
+        <div class="header">
+            <h1>Atendimento SIMGEs</h1>
+            <div class="header-right">
+                <button id="instructionsButton" class="action-button secondary-button">Instruções</button>
+                <div>
+                    <span id="currentDate"></span>
+                    <br>
+                    <span id="currentTime"></span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="action-button primary-button" onclick="openModal('newAttendanceModal')">Novo Atendimento</button>
+            <button class="action-button secondary-button" onclick="openModal('maintenanceModal')">Abrir Chamado para Manutenção</button>
+        </div>
 
-        <div class="content">
-            <div class="header">
-                <h1>Atendimento SIMGEs</h1>
-                <div class="header-right">
-                    <button id="instructionsButton" class="action-button secondary-button">Instruções</button>
-                    <div>
-                        <span id="currentDate"></span>
-                        <br>
-                        <span id="currentTime"></span>
-                    </div>
-                </div>
+        <!-- Grid para listagens e gráficos -->
+        <div class="dashboard-grid">
+            <div class="dashboard-item">
+                <h2>Fila de Atendimento</h2>
+                <div class="attendance-list" id="attendanceList"></div>
             </div>
-            <div class="action-buttons">
-                <button class="action-button primary-button" onclick="openModal('newAttendanceModal')">Novo Atendimento</button>
-                <button class="action-button secondary-button" onclick="openModal('maintenanceModal')">Abrir Chamado para Manutenção</button>
+            <div class="dashboard-item">
+                <h2>Agendamentos da Semana</h2>
+                <div class="week-navigation">
+                    <button id="prevWeek" class="nav-button">&lt; Anterior</button>
+                    <span id="currentWeek"></span>
+                    <button id="nextWeek" class="nav-button">Próximo &gt;</button>
+                </div>
+                <div id="weeklySchedule"></div>
             </div>
-            <div class="dashboard-grid">
-                <div class="dashboard-item">
-                    <h2>Fila de Atendimento</h2>
-                    <div class="attendance-list" id="attendanceList">
-                        <!-- Lista de atendimentos será preenchida dinamicamente -->
-                    </div>
-                </div>
-                <div class="dashboard-item">
-                    <h2>Agendamentos da Semana</h2>
-                    <div class="week-navigation">
-                        <button id="prevWeek" class="nav-button">&lt; Anterior</button>
-                        <span id="currentWeek"></span>
-                        <button id="nextWeek" class="nav-button">Próximo &gt;</button>
-                    </div>
-                    <div id="weeklySchedule">
-                        <!-- Agendamentos semanais serão preenchidos dinamicamente -->
-                    </div>
-                </div>
-                <div class="dashboard-item">
-                    <h2>Agendamentos Pendentes</h2>
-                    <div class="pending-appointments" id="pendingAppointments">
-                        <!-- Agendamentos pendentes serão preenchidos dinamicamente -->
-                    </div>
-                </div>
+            <div class="dashboard-item">
+                <h2>Agendamentos Pendentes</h2>
+                <div class="pending-appointments" id="pendingAppointments"></div>
             </div>
-            <div class="dashboard-item full-width">
-                <h2>Atendimentos por Tipo</h2>
-                <div class="chart-controls">
-                    <select id="chartTypeSelect">
-                        <option value="module">Módulo</option>
-                        <option value="room">Sala</option>
-                        <option value="discipline">Disciplina</option>
-                        <option value="course">Curso</option>
-                    </select>
-                    <select id="chartPeriodSelect">
-                        <option value="daily">Diário</option>
-                        <option value="weekly">Semanal</option>
-                    </select>
-                </div>
-                <div class="chart-container">
-                    <canvas id="attendanceChart"></canvas>
-                </div>
+        </div>
+
+        <!-- Gráfico de atendimentos por tipo -->
+        <div class="dashboard-item full-width">
+            <h2>Atendimentos por Tipo</h2>
+            <div class="chart-controls">
+                <select id="chartTypeSelect">
+                    <option value="module">Módulo</option>
+                    <option value="room">Sala</option>
+                    <option value="discipline">Disciplina</option>
+                    <option value="course">Curso</option>
+                </select>
+                <select id="chartPeriodSelect">
+                    <option value="daily">Diário</option>
+                    <option value="weekly">Semanal</option>
+                </select>
+            </div>
+            <div class="chart-container">
+                <canvas id="attendanceChart"></canvas>
             </div>
         </div>
     </div>
 
-    <!-- Modal para Novo Atendimento -->
+    <!-- Modais para Novo Atendimento e Manutenção -->
     <div id="newAttendanceModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('newAttendanceModal')">&times;</span>
             <h2>Novo Atendimento</h2>
             <form id="newAttendanceForm">
-                <label for="patientName">Nome do Paciente:</label>
-                <input type="text" id="patientName" required>
-                <label for="attendanceType">Tipo de Atendimento:</label>
-                <select id="attendanceType" required>
-                    <option value="">Selecione o tipo</option>
-                    <option value="emergencia">Emergência</option>
-                    <option value="consulta">Consulta</option>
-                    <option value="exame">Exame</option>
-                </select>
-                <label for="professors">Professores:</label>
-                <input type="text" id="professors" required>
-                <label for="discipline">Disciplina:</label>
-                <input type="text" id="discipline" required>
-                <label for="module">Módulo:</label>
-                <input type="text" id="module" required>
-                <label for="room">Sala:</label>
-                <input type="text" id="room" required>
-                <label for="startTime">Horário de Início:</label>
-                <input type="time" id="startTime" required>
-                <label for="duration">Duração (minutos):</label>
-                <input type="number" id="duration" required>
-                <button type="submit" class="action-button primary-button">Iniciar Atendimento</button>
+                <!-- Campos do formulário -->
             </form>
         </div>
     </div>
 
-    <!-- Modal para Abrir Chamado de Manutenção -->
     <div id="maintenanceModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('maintenanceModal')">&times;</span>
             <h2>Abrir Chamado para Manutenção</h2>
             <form id="maintenanceForm">
-                <label for="maintenanceType">Tipo de Manutenção:</label>
-                <select id="maintenanceType" required>
-                    <option value="">Selecione o tipo</option>
-                    <option value="equipamento">Equipamento</option>
-                    <option value="infraestrutura">Infraestrutura</option>
-                    <option value="software">Software</option>
-                </select>
-                <label for="maintenanceDescription">Descrição do Problema:</label>
-                <textarea id="maintenanceDescription" required></textarea>
-                <label for="maintenanceLocation">Localização:</label>
-                <input type="text" id="maintenanceLocation" required>
-                <label for="maintenancePriority">Prioridade:</label>
-                <select id="maintenancePriority" required>
-                    <option value="baixa">Baixa</option>
-                    <option value="media">Média</option>
-                    <option value="alta">Alta</option>
-                    <option value="urgente">Urgente</option>
-                </select>
-                <button type="submit" class="action-button primary-button">Abrir Chamado</button>
+                <!-- Campos do formulário de manutenção -->
             </form>
         </div>
     </div>
 
-    <!-- Modal para Editar Atendimento -->
-    <div id="editAttendanceModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('editAttendanceModal')">&times;</span>
-            <h2>Editar Atendimento</h2>
-            <form id="editAttendanceForm">
-                <input type="hidden" id="editAttendanceId">
-                <label for="editPatientName">Nome do Paciente:</label>
-                <input type="text" id="editPatientName" required>
-                <label for="editAttendanceType">Tipo de Atendimento:</label>
-                <select id="editAttendanceType" required>
-                    <option value="Emergência">Emergência</option>
-                    <option value="Consulta">Consulta</option>
-                    <option value="Exame">Exame</option>
-                </select>
-                <label for="editProfessors">Professores:</label>
-                <input type="text" id="editProfessors" required>
-                <label for="editDiscipline">Disciplina:</label>
-                <input type="text" id="editDiscipline" required>
-                <label for="editModule">Módulo:</label>
-                <input type="text" id="editModule" required>
-                <label for="editRoom">Sala:</label>
-                <input type="text" id="editRoom" required>
-                <label for="editStartTime">Horário de Início:</label>
-                <input type="time" id="editStartTime" required>
-                <label for="editEndTime">Horário de Término:</label>
-                <input type="time" id="editEndTime" required>
-                <button type="submit" class="action-button primary-button">Salvar Alterações</button>
-            </form>
-        </div>
-    </div>
+    <!-- Link para o JavaScript -->
+    <script src="assets/js/atendimento.js"></script>
+</body>
+</html>
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f2f5;
+}
 
-    <!-- Modal for Instructions -->
-    <div id="instructionsModal" class="modal">
-        <div class="modal-content instructions-content" id="instructionsModalContent">
-            <div class="modal-header">
-                <h2>Instruções de Uso</h2>
-                <button id="configButton" class="action-button secondary-button">Config</button>
-                <span class="close" onclick="closeModal('instructionsModal')">&times;</span>
+.container {
+    display: flex;
+    height: 100%;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.header {
+    background-color: #3498db;
+    color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.action-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.primary-button {
+    background-color: #3498db;
+    color: white;
+}
+
+.primary-button:hover {
+    background-color: #2980b9;
+}
+
+.secondary-button {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.secondary-button:hover {
+    background-color: #7f8c8d;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.dashboard-item {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.chart-container {
+    height: 400px;
+}
+
+/* Modais */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+document.addEventListener('DOMContentLoaded', function() {
+    updateCurrentDate();
+    updateAttendanceList();
+    createAttendanceChart();
+
+    setInterval(updateClock, 1000); // Atualizar o relógio a cada segundo
+});
+
+function navigateTo(page) {
+    window.location.href = `${page}.html`; // Redirecionamento simples para páginas
+}
+
+// Atualizar a data e hora atual
+function updateCurrentDate() {
+    const currentDate = new Date();
+    document.getElementById('currentDate').textContent = currentDate.toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function updateClock() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    document.getElementById('currentTime').textContent = timeString;
+}
+
+// Funções de modais
+function openModal(modalId) {
+    document.getElementById(modalId).style.display = 'block';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// Exibir lista de atendimentos
+const attendanceQueue = [
+    { id: 1, name: "João Silva", type: "Emergência", status: "Aguardando", startTime: "09:30", endTime: "10:30" },
+    { id: 2, name: "Maria Oliveira", type: "Consulta", status: "Aguardando", startTime: "10:00", endTime: "10:45" },
+    { id: 3, name: "Carlos Santos", type: "Exame", status: "Aguardando", startTime: "10:30", endTime: "11:00" }
+];
+
+function updateAttendanceList() {
+    const listElement = document.getElementById('attendanceList');
+    listElement.innerHTML = ''; // Limpar a lista antes de atualizá-la
+    attendanceQueue.forEach(attendance => {
+        const attendanceElement = document.createElement('div');
+        attendanceElement.className = 'attendance-item';
+        attendanceElement.innerHTML = `
+            <div>
+                <strong>${attendance.name}</strong> - ${attendance.type}
+                <br>
+                <small>Início: ${attendance.startTime} | Fim: ${attendance.endTime}</small>
             </div>
-            <div id="instructionsContent"></div>
-        </div>
-    </div>
+            <div>
+                <button class="status-button" onclick="changeStatus(${attendance.id})">${attendance.status}</button>
+                <button class="edit-button" onclick="editAttendance(${attendance.id})">Editar</button>
+            </div>
+        `;
+        listElement.appendChild(attendanceElement);
+    });
+}
 
-    <script>
-        let attendanceChart = null;
-        let attendanceQueue = [
-            { 
-                id: 1, 
-                name: "João Silva", 
-                type: "Emergência", 
-                status: "Aguardando", 
-                startTime: "09:30",
-                endTime: "10:30",
-                professors: ["Dr. Carlos"],
-                discipline: "Primeiros Socorros",
-                module: "APH",
-                room: "Sala 1"
-            },
-            { 
-                id: 2, 
-                name: "Maria Oliveira", 
-                type: "Consulta", 
-                status: "Aguardando", 
-                startTime: "10:00",
-                endTime: "10:45",
-                professors: ["Profa. Ana"],
-                discipline: "Pediatria",
-                module: "Pediátrica",
-                room: "Sala 2"
-            },
-            { 
-                id: 3, 
-                name: "Carlos Santos", 
-                type: "Exame", 
-                status: "Aguardando", 
-                startTime: "10:30",
-                endTime: "11:00",
-                professors: ["Dr. Eduardo"],
-                discipline: "Exames Clínicos",
-                module: "Exames",
-                room: "Sala 3"
-            }
-        ];
+// Função para alterar o status do atendimento
+function changeStatus(id) {
+    const attendance = attendanceQueue.find(a => a.id === id);
+    if (attendance.status === "Aguardando") {
+        attendance.status = "Em atendimento";
+    } else if (attendance.status === "Em atendimento") {
+        attendance.status = "Concluído";
+    }
+    updateAttendanceList();
+}
 
-        const modules = [
-            'Emergência', 'APH', 'Enfermaria', 'Posto de Enfermagem', 'Farmácia', 'UTI',
-            'Centro Cirúrgico', 'Esterilização', 'Sala de Recuperação', 'Ginecologia',
-            'Obstetrícia', 'UBS Simulada'
-        ];
+// Função para editar um atendimento
+function editAttendance(id) {
+    const attendance = attendanceQueue.find(a => a.id === id);
+    if (attendance) {
+        document.getElementById('editPatientName').value = attendance.name;
+        document.getElementById('editAttendanceType').value = attendance.type;
+        openModal('editAttendanceModal');
+    }
+}
 
-        const rooms = ['Sala 1', 'Sala 2', 'Sala 3', 'Sala 4', 'Sala 5', 'Sala 6', 'Sala 7', 'Sala 8', 'Sala 9', 'Sala 10'];
+// Gráfico de atendimentos por tipo
+let attendanceChart = null;
 
-        const disciplines = ['Clínica Médica', 'Cirurgia', 'Pediatria', 'Ginecologia e Obstetrícia', 'Saúde Coletiva'];
-
-        const courses = ['Medicina', 'Enfermagem', 'Fisioterapia', 'Farmácia'];
-
-        let weeklySchedules = [
-            { day: "Segunda", appointments: [
-                { time: "09:00", patient: "Ana Silva", type: "Consulta" },
-                { time: "14:30", patient: "Pedro Santos", type: "Exame" }
-            ]},
-            { day: "Terça", appointments: [
-                { time: "10:00", patient: "Mariana Oliveira", type: "Emergência" },
-                { time: "15:00", patient: "João Pereira", type: "Consulta" }
-            ]},
-            { day: "Quarta", appointments: [
-                { time: "11:00", patient: "Carla Rodrigues", type: "Exame" },
-                { time: "16:30", patient: "Fernando Costa", type: "Consulta" }
-            ]},
-            { day: "Quinta", appointments: [
-                { time: "09:30", patient: "Lúcia Ferreira", type: "Consulta" },
-                { time: "14:00", patient: "Ricardo Alves", type: "Emergência" }
-            ]},
-            { day: "Sexta", appointments: [
-                { time: "10:30", patient: "Sofia Martins", type: "Exame" },
-                { time: "15:30", patient: "André Sousa", type: "Consulta" }
-            ]}
-        ];
-
-        let pendingAppointments = [
-            { 
-                id: 1, 
-                name: "Lucas Mendes", 
-                type: "Consulta", 
-                date: "2023-06-15",
-                time: "14:00",
-                discipline: "Clínica Médica",
-                module: "UBS Simulada",
-                room: "Sala 4"
-            },
-            { 
-                id: 2, 
-                name: "Fernanda Costa", 
-                type: "Exame", 
-                date: "2023-06-16",
-                time: "10:30",
-                discipline: "Diagnóstico por Imagem",
-                module: "Radiologia",
-                room: "Sala 5"
-            }
-        ];
-
-        let currentWeekStart = new Date();
-        currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay() + 1);
-
-        function navigateTo(page) {
-            window.location.href = `https://github.com/Maubek8/SL/${page}`;
+function createAttendanceChart() {
+    const ctx = document.getElementById('attendanceChart').getContext('2d');
+    attendanceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Emergência', 'Consulta', 'Exame'],
+            datasets: [{
+                label: 'Atendimentos',
+                data: [12, 19, 3],
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
         }
+    });
+}
 
-        document.addEventListener('DOMContentLoaded', function() {
-            updateCurrentDate();
-            updateAttendanceList();
-            updateWeeklySchedule();
-            updatePendingAppointments();
-            createAttendanceChart();
-            
-            // Start the clock
-            updateClock();
-            setInterval(updateClock, 1000);
-        });
-
-        function updateCurrentDate() {
-            const currentDate = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('currentDate').textContent = currentDate.toLocaleDateString('pt-BR', options);
-        }
-
-        function updateClock() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            document.getElementById('currentTime').textContent = timeString;
-        }
-
-        function updateAttendanceList() {
-            const listElement = document.getElementById('attendanceList');
-            listElement.innerHTML = '';
-            attendanceQueue.forEach(attendance => {
-                const attendanceElement = document.createElement('div');
-                attendanceElement.className = 'attendance-item';
-                attendanceElement.innerHTML = `
-                    <div>
-                        <strong>${attendance.name}</strong> - ${attendance.type}
-                        <br>
-                        <small>Início: ${attendance.startTime} | Fim: ${attendance.endTime}</small>
-                        <br>
-                        <small>Professores: ${attendance.professors.join(', ')} | Disciplina: ${attendance.discipline}</small>
-                        <br>
-                        <small>Módulo: ${attendance.module} | Sala: ${attendance.room}</small>
-                    </div>
-                    <div>
-                        <button class="status-button ${attendance.status.toLowerCase()}" onclick="changeStatus(${attendance.id})">${attendance.status}</button>
-                        <button class="edit-button" onclick="editAttendance(${attendance.id})">Editar</button>
-                    </div>
-                `;
-                listElement.appendChild(attendanceElement);
-            });
-            createAttendanceChart();
-        }
-
-        function updateWeeklySchedule() {
-            const scheduleElement = document.getElementById('weeklySchedule');
-            scheduleElement.innerHTML = '';
-            
-            for (let i = 0; i < 7; i++) {
-                const currentDate = new Date(currentWeekStart);
-                currentDate.setDate(currentDate.getDate() + i);
-                
-                const dayElement = document.createElement('div');
-                dayElement.innerHTML = `<h3>${getDayOfWeek(currentDate)} - ${currentDate.toLocaleDateString()}</h3>`;
-                
-                const dayAppointments = weeklySchedules.find(day => day.day === getDayOfWeek(currentDate))?.appointments || [];
-                
-                dayAppointments.forEach(appointment => {
-                    const appointmentElement = document.createElement('div');
-                    appointmentElement.className = 'attendance-item';
-                    appointmentElement.innerHTML = `
-                        <div>
-                            <strong>${appointment.time}</strong> - ${appointment.patient}
-                            <br>
-                            <small>${appointment.type}</small>
-                        </div>
-                    `;
-                    dayElement.appendChild(appointmentElement);
-                });
-                
-                scheduleElement.appendChild(dayElement);
-            }
-            
-            document.getElementById('currentWeek').textContent = `${currentWeekStart.toLocaleDateString()} - ${new Date(currentWeekStart.getTime() + 6 * 24 * 60 * 60 * 1000).toLocaleDateString()}`;
-        }
-
-        document.getElementById('prevWeek').addEventListener('click', () => {
-            currentWeekStart.setDate(currentWeekStart.getDate() - 7);
-            updateWeeklySchedule();
-        });
-
-        document.getElementById('nextWeek').addEventListener('click', () => {
-            currentWeekStart.setDate(currentWeekStart.getDate() + 7);
-            updateWeeklySchedule();
-        });
-
-        function updatePendingAppointments() {
-            const pendingList = document.getElementById('pendingAppointments');
-            pendingList.innerHTML = '';
-            pendingAppointments.forEach(appointment => {
-                const appointmentElement = document.createElement('div');
-                appointmentElement.className = 'pending-appointment';
-                appointmentElement.innerHTML = `
-                    <div>
-                        <strong>${appointment.name}</strong> - ${appointment.type}
-                        <br>
-                        <small>Data: ${appointment.date} | Hora: ${appointment.time}</small>
-                        <br>
-                        <small>Disciplina: ${appointment.discipline} | Módulo: ${appointment.module} | Sala: ${appointment.room}</small>
-                    </div>
-                    <button class="confirm-button" onclick="confirmAppointment(${appointment.id})">Confirmar</button>
-                `;
-                pendingList.appendChild(appointmentElement);
-            });
-        }
-
-        function confirmAppointment(id) {
-            const appointmentIndex = pendingAppointments.findIndex(a => a.id === id);
-            if (appointmentIndex !== -1) {
-                const confirmedAppointment = pendingAppointments.splice(appointmentIndex, 1)[0];
-                weeklySchedules.find(day => day.day === getDayOfWeek(confirmedAppointment.date)).appointments.push({
-                    time: confirmedAppointment.time,
-                    patient: confirmedAppointment.name,
-                    type: confirmedAppointment.type
-                });
-                updatePendingAppointments();
-                updateWeeklySchedule();
-            }
-        }
-
-        function getDayOfWeek(date) {
-            const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-            return days[date.getDay()];
-        }
-
-        function changeStatus(id) {
-            const attendance = attendanceQueue.find(a => a.id === id);
-            if (attendance.status === "Aguardando") {
-                attendance.status = "Em atendimento";
-            } else if (attendance.status === "Em atendimento") {
-                attendance.status = "Concluído";
-            }
-            updateAttendanceList();
-        }
-
-        function editAttendance(id) {
-            const attendance = attendanceQueue.find(a => a.id === id);
-            if (attendance) {
-                document.getElementById('editAttendanceId').value = attendance.id;
-                document.getElementById('editPatientName').value = attendance.name;
-                document.getElementById('editAttendanceType').value = attendance.type;
-                document.getElementById('editProfessors').value = attendance.professors.join(', ');
-                document.getElementById('editDiscipline').value = attendance.discipline;
-                document.getElementById('editModule').value = attendance.module;
-                document.getElementById('editRoom').value = attendance.room;
-                document.getElementById('editStartTime').value = attendance.startTime;
-                document.getElementById('editEndTime').value = attendance.endTime;
-                
-                openModal('editAttendanceModal');
-            }
-        }
-
-        document.getElementById('newAttendanceForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('patientName').value;
-            const type = document.getElementById('attendanceType').value;
-            const professors = document.getElementById('professors').value.split(',').map(p => p.trim());
-            const discipline = document.getElementById('discipline').value;
-            const module = document.getElementById('module').value;
-            const room = document.getElementById('room').value;
-            const startTime = document.getElementById('startTime').value;
-            const duration = parseInt(document.getElementById('duration').value);
-            const endTime = new Date('1970-01-01T' + startTime + 'Z')
-                .getTime() + duration * 60000;
-            const endTimeString = new Date(endTime).toTimeString().slice(0, 5);
-
-            const newAttendance = {
-                id: attendanceQueue.length + 1,
-                name: name,
-                type: type,
-                status: "Aguardando",
-                startTime: startTime,
-                endTime: endTimeString,
-                professors: professors,
-                discipline: discipline,
-                module: module,
-                room: room
-            };
-            attendanceQueue.push(newAttendance);
-            updateAttendanceList();
-            closeModal('newAttendanceModal');
-            this.reset();
-        });
-
-        document.getElementById('maintenanceForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const type = document.getElementById('maintenanceType').value;
-            const description = document.getElementById('maintenanceDescription').value;
-            const location = document.getElementById('maintenanceLocation').value;
-            const priority = document.getElementById('maintenancePriority').value;
-
-            console.log('Novo chamado de manutenção:', { type, description, location, priority });
-            
-            const requestId = Date.now().toString(36) + Math.random().toString(36).substr(2);
-            const maintenanceRequest = { requestId, type, description, location, priority, date: new Date().toLocaleString() };
-            console.log('Maintenance request created:', maintenanceRequest);
-            displayMaintenanceConfirmation(maintenanceRequest);
-            closeModal('maintenanceModal');
-            this.reset();
-        });
-
-        function displayMaintenanceConfirmation(request) {
-            const confirmationHtml = `
-                <h3>Chamado de Manutenção Aberto</h3>
-                <p><strong>ID do Chamado:</strong> ${request.requestId}</p>
-                <p><strong>Tipo:</strong> ${request.type}</p>
-                <p><strong>Descrição:</strong> ${request.description}</p>
-                <p><strong>Localização:</strong> ${request.location}</p>
-                <p><strong>Prioridade:</strong> ${request.priority}</p>
-                <p><strong>Data/Hora:</strong> ${request.date}</p>
-                <button onclick="printMaintenanceRequest('${request.requestId}')">Imprimir Chamado</button>
-            `;
-            
-            const confirmationModal = document.createElement('div');
-            confirmationModal.id = `maintenanceConfirmation-${request.requestId}`;
-            confirmationModal.className = 'modal';
-            confirmationModal.innerHTML = `
-                <div class="modal-content">
-                    <span class="close" onclick="closeModal('maintenanceConfirmation-${request.requestId}')">&times;</span>
-                    ${confirmationHtml}
-                </div>
-            `;
-            
-            document.body.appendChild(confirmationModal);
-            openModal(`maintenanceConfirmation-${request.requestId}`);
-        }
-
-        function printMaintenanceRequest(requestId) {
-            const printContent = document.getElementById(`maintenanceConfirmation-${requestId}`).querySelector('.modal-content').innerHTML;
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`
-                <html>
-                    <head>
-                        <title>Chamado de Manutenção - ${requestId}</title>
-                        <style>
-                            body { font-family: Arial, sans-serif; }
-                            h3 { color: #3498db; }
-                            button { display: none; }
-                        </style>
-                    </head>
-                    <body>
-                        ${printContent}
-                    </body>
-                </html>
-            `);
-            printWindow.document.close();
-            printWindow.focus();
-            printWindow.print();
-            printWindow.close();
-        }
-
-        document.getElementById('editAttendanceForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('editAttendanceId').value);
-            const attendance = attendanceQueue.find(a => a.id === id);
-            if (attendance) {
-                attendance.name = document.getElementById('editPatientName').value;
-                attendance.type = document.getElementById('editAttendanceType').value;
-                attendance.professors = document.getElementById('editProfessors').value.split(',').map(p => p.trim());
-                attendance.discipline = document.getElementById('editDiscipline').value;
-                attendance.module = document.getElementById('editModule').value;
-                attendance.room = document.getElementById('editRoom').value;
-                attendance.startTime = document.getElementById('editStartTime').value;
-                attendance.endTime = document.getElementById('editEndTime').value;
-                
-                updateAttendanceList();
-                closeModal('editAttendanceModal');
-            }
-        });
-
-        function createAttendanceChart() {
-            const chartElement = document.getElementById('attendanceChart');
-            const chartTypeSelect = document.getElementById('chartTypeSelect');
-            const chartPeriodSelect = document.getElementById('chartPeriodSelect');
-            
-            if (chartElement) {
-                const ctx = chartElement.getContext('2d');
-
-                function updateChart() {
-                    const selectedType = chartTypeSelect.value;
-                    const selectedPeriod = chartPeriodSelect.value;
-                    let labels, data;
-
-                    switch (selectedType) {
-                        case 'module':
-                            labels = modules;
-                            data = modules.map(() => Math.floor(Math.random() * 20));
-                            break;
-                        case 'room':
-                            labels = rooms;
-                            data = rooms.map(() => Math.floor(Math.random() * 15));
-                            break;
-                        case 'discipline':
-                            labels = disciplines;
-                            data = disciplines.map(() => Math.floor(Math.random() * 25));
-                            break;
-                        case 'course':
-                            labels = courses;
-                            data = courses.map(() => Math.floor(Math.random() * 30));
-                            break;
-                    }
-
-                    if (selectedPeriod === 'weekly') {
-                        data = data.map(value => value * 5);
-                    }
-
-                    if (attendanceChart) {
-                        attendanceChart.destroy();
-                    }
-
-                    const colors = [
-                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
-                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
-                    ];
-
-                    attendanceChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: `Atendimentos ${selectedPeriod === 'daily' ? 'Diários' : 'Semanais'}`,
-                                data: data,
-                                backgroundColor: colors.slice(0, labels.length)
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    stepSize: 1
-                                }
-                            }
-                        }
-                    });
-                }
-
-                chartTypeSelect.addEventListener('change', updateChart);
-                chartPeriodSelect.addEventListener('change', updateChart);
-                updateChart();
-            }
-        }
-
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'block';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        let isDragging = false;
-        let currentX;
-        let currentY;
-        let initialX;
-        let initialY;
-        let xOffset = 0;
-        let yOffset = 0;
-
-        function dragStart(e) {
-            initialX = e.clientX - xOffset;
-            initialY = e.clientY - yOffset;
-
-            if (e.target === document.getElementById('instructionsModalContent')) {
-                isDragging = true;
-            }
-        }
-
-        function dragEnd(e) {
-            initialX = currentX;
-            initialY = currentY;
-
-            isDragging = false;
-        }
-
-        function drag(e) {
-            if (isDragging) {
-                e.preventDefault();
-                currentX = e.clientX - initialX;
-                currentY = e.clientY - initialY;
-
-                xOffset = currentX;
-                yOffset = currentY;
-
-                setTranslate(currentX, currentY, document.getElementById('instructionsModalContent'));
-            }
-        }
-
-        function setTranslate(xPos, yPos, el) {
-            el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
-        }
-
-        document.addEventListener('mousedown', dragStart, false);
-        document.addEventListener('mouseup', dragEnd, false);
-        document.addEventListener('mousemove', drag, false);
-
-        function openInstructions() {
-            const instructionsContent = {
-                'Novo Atendimento': 'Use este botão para adicionar um novo atendimento à fila. Preencha todos os campos necessários.',
-                'Abrir Chamado para Manutenção': 'Utilize esta opção para reportar problemas ou solicitar manutenção em equipamentos ou infraestrutura.',
-                'Fila de Atendimento': 'Visualize e gerencie os atendimentos do dia. Clique nos botões de status para atualizar o progresso.',
-                'Agendamentos da Semana': 'Veja os agendamentos programados para a semana atual.',
-                'Atendimentos por Tipo': 'Gráfico que mostra a distribuição dos tipos de atendimento.',
-                'Agendamentos Pendentes': 'Confirme ou gerencie os agendamentos que ainda não foram aprovados.'
-            };
-
-            let content = '<ul>';
-            for (const [key, value] of Object.entries(instructionsContent)) {
-                content += `<li><strong>${key}:</strong> ${value}</li>`;
-            }
-            content += '</ul>';
-
-            document.getElementById('instructionsContent').innerHTML = content;
-            openModal('instructionsModal');
-        }
-
-        document.getElementById('instructionsButton').addEventListener('click', openInstructions);
-
-        document.getElementById('configButton').addEventListener('click', function() {
-            const configContent = `
-                <h3>Configuração do Site de Atendimento</h3>
-                <p>Este site foi construído utilizando HTML5, CSS3 e JavaScript. Abaixo estão os principais componentes e suas características:</p>
-                <ul>
-                    <li><strong>HTML:</strong> Estrutura semântica com uso de tags como header, main, section, etc.</li>
-                    <li><strong>CSS:</strong> Layout flexível e responsivo, utilizando Flexbox e Grid.</li>
-                    <li><strong>JavaScript:</strong> Manipulação do DOM, gerenciamento de eventos, e criação de gráficos interativos.</li>
-                    <li><strong>Bibliotecas:</strong> Chart.js para criação de gráficos.</li>
-                    <li><strong>Funcionalidades:</strong> Sistema de agendamento, fila de atendimento, chamados de manutenção, e dashboard interativo.</li>
-                </ul>
-                <p>Para uma descrição detalhada do código fonte, consulte a <a href="https://github.com/Maubek8/SL/documentacao-tecnica" target="_blank">documentação técnica</a> do projeto.</p>
-            `;
-            document.getElementById('instructionsContent').innerHTML = configContent;
-        });
-    </script>
-</body></html>
+// Submissão do formulário de Novo Atendimento
+document.getElementById('newAttendanceForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('patientName').value;
+    const type = document.getElementById('attendanceType').value;
+    const newAttendance = { id: attendanceQueue.length + 1, name, type, status: "Aguardando", startTime: "10:00", endTime: "11:00" };
+    attendanceQueue.push(newAttendance);
+    updateAttendanceList();
+    closeModal('newAttendanceModal');
+    this.reset();
+});
