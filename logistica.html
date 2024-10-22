@@ -41,33 +41,7 @@
             <!-- Seção de Gestão de Equipamentos -->
             <div id="equipment-management" class="section">
                 <h2>Gestão de Equipamentos</h2>
-                <form id="equipamento-form">
-                    <label for="nome-equipamento">Nome do Equipamento:</label>
-                    <input type="text" id="nome-equipamento" name="nome-equipamento" required>
-                    <label for="status-equipamento">Status:</label>
-                    <select id="status-equipamento" name="status-equipamento">
-                        <option value="Disponível">Disponível</option>
-                        <option value="Em Manutenção">Em Manutenção</option>
-                    </select>
-                    <button type="button" onclick="adicionarEquipamento()">Adicionar Equipamento</button>
-                </form>
-
-                <!-- Tabela para listar equipamentos -->
-                <table class="logistica-table">
-                    <thead>
-                        <tr>
-                            <th>Nome do Equipamento</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="equipamentos-lista">
-                        <!-- Equipamentos serão exibidos dinamicamente -->
-                    </tbody>
-                </table>
-
-                <!-- Gráfico de Status dos Equipamentos -->
-                <h3>Status dos Equipamentos</h3>
-                <canvas class="logistica-grafico" id="equipamentosGrafico" width="400" height="200"></canvas>
+                <!-- Conteúdo de Gestão de Equipamentos -->
             </div>
 
             <!-- Seção de Calendário e Agendamento -->
@@ -75,76 +49,32 @@
                 <h2>Calendário e Agendamento</h2>
                 <p>Gerencie a reserva de salas e equipamentos através do calendário.</p>
                 <div id="calendar-content">
-                    <!-- Aqui estará o conteúdo do calendário interativo -->
+                    <!-- Conteúdo do calendário -->
                 </div>
             </div>
 
             <!-- Seção de Materiais Consumíveis -->
             <div id="consumables" class="section">
                 <h2>Materiais Consumíveis</h2>
-                <p>Gerenciamento de estoque de materiais consumíveis.</p>
-                <table class="logistica-table">
-                    <thead>
-                        <tr>
-                            <th>Material</th>
-                            <th>Quantidade em Estoque</th>
-                            <th>Repor Estoque</th>
-                        </tr>
-                    </thead>
-                    <tbody id="materiais-lista">
-                        <!-- Materiais serão exibidos dinamicamente -->
-                    </tbody>
-                </table>
+                <!-- Conteúdo de Materiais Consumíveis -->
             </div>
 
             <!-- Seção de Gestão de Participantes -->
             <div id="participants" class="section">
                 <h2>Gestão de Participantes</h2>
-                <p>Gerencie os funcionários e professores do SimLab.</p>
-                <table class="logistica-table">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Cargo</th>
-                            <th>Setor</th>
-                        </tr>
-                    </thead>
-                    <tbody id="participantes-lista">
-                        <!-- Participantes serão exibidos dinamicamente -->
-                    </tbody>
-                </table>
+                <!-- Conteúdo de Gestão de Participantes -->
             </div>
 
             <!-- Seção de Relatórios e Análises -->
             <div id="reports" class="section">
                 <h2>Relatórios e Análises</h2>
-                <p>Geração de relatórios logísticos e análise dos dados.</p>
-                <button onclick="gerarRelatorio()">Gerar Relatório</button>
-                <canvas class="logistica-grafico" id="relatoriosGrafico" width="400" height="200"></canvas>
+                <!-- Conteúdo de Relatórios -->
             </div>
 
             <!-- Seção de Suporte Operacional -->
             <div id="support" class="section">
                 <h2>Suporte Operacional</h2>
-                <p>Gerencie o suporte técnico e as solicitações operacionais.</p>
-                <form id="suporte-form">
-                    <label for="descricao-suporte">Descrição do Problema:</label>
-                    <input type="text" id="descricao-suporte" name="descricao-suporte" required>
-                    <button type="button" onclick="registrarSuporte()">Registrar Solicitação</button>
-                </form>
-
-                <!-- Tabela de Suporte -->
-                <table class="logistica-table">
-                    <thead>
-                        <tr>
-                            <th>Problema</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="suporte-lista">
-                        <!-- Solicitações de suporte serão exibidas dinamicamente -->
-                    </tbody>
-                </table>
+                <!-- Conteúdo de Suporte -->
             </div>
         </div>
     </div>
